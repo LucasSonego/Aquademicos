@@ -1,3 +1,4 @@
+import "dotenv/config";
 import * as yup from "yup";
 import { client } from "../database/client";
 import bcrypt from "bcryptjs";
@@ -10,12 +11,24 @@ class UserController {
       name: yup.string().required(),
       email: yup.string().required().email(),
       password: yup.string().required().min(6),
+      is_admin: yup.boolean(),
+      admin_secret: yup.string().when("is_admin", {
+        is: (is_admin) => is_admin === true,
+        then: yup.string().required(),
+      }),
     });
 
     if (!(await schema.isValid(req.body))) {
-      return res.sendStatus(400).json({
+      return res.status(400).json({
         error: "Um ou mais campos não foram preenchidos corretamente",
       });
+    }
+
+    if (
+      req.body.is_admin === true &&
+      req.body.admin_secret !== process.env.ADMIN_SECRET
+    ) {
+      return res.status(401).json("Chave de cadastro de orientador incorreta");
     }
 
     const emailAlreadyUsed = await client.user.findFirst({
@@ -23,12 +36,13 @@ class UserController {
     });
 
     if (emailAlreadyUsed) {
-      return res.status(409).json({
+      return res.status(400).json({
         error: "Este email já está cadastrado para outro usuário",
       });
     }
 
     let password_hash = await bcrypt.hash(req.body.password, 8);
+    let is_admin = !!req.body.is_admin;
 
     try {
       const { id, name, email } = await client.user.create({
@@ -36,6 +50,7 @@ class UserController {
           name: req.body.name,
           email: req.body.email,
           password_hash,
+          is_admin,
         },
       });
       return res.send({
@@ -44,7 +59,7 @@ class UserController {
         email,
       });
     } catch (error) {
-      return res.status(500).json({
+      return res.status(400).json({
         error: error.name,
       });
     }
@@ -66,8 +81,8 @@ class UserController {
         return res.json(user);
       } else
         return res
-          .json({ error: "Não existe nenhum usuário com o id buscado" })
-          .sendStatus(404);
+          .status(404)
+          .json({ error: "Não existe nenhum usuário com o id buscado" });
     }
 
     let response = await client.user.findMany({
@@ -90,8 +105,9 @@ class UserController {
       oldPassword: yup
         .string()
         .min(6)
-        .when("password", (password, field) => {
-          return password ? field.required() : field;
+        .when("password", {
+          is: (password) => password !== null,
+          then: yup.string().min(6).required(),
         }),
     });
 
@@ -146,6 +162,83 @@ class UserController {
     if (!response) {
       return res.sendStatus(500);
     }
+
+    return res.json(response);
+  }
+
+  async adminUpdate(req: AuthenticatedRequest, res: Response) {
+    const schema = yup.object().shape({
+      id: yup.string().required(),
+      name: yup.string(),
+      email: yup.string().email(),
+      password: yup.string().min(6),
+    });
+
+    if (!(await schema.isValid(req.body))) {
+      return res.status(400).json({
+        error: "Um ou mais campos não foram preenchidos corretamente",
+      });
+    }
+
+    const { is_admin } = await client.user.findUnique({
+      where: { id: req.userId },
+      select: {
+        is_admin: true,
+      },
+    });
+
+    if (!is_admin) {
+      return res
+        .status(403)
+        .json({ error: "Apenas os orientadores podem realizar esta ação" });
+    }
+
+    const user = await client.user.findUnique({
+      where: { id: req.body.id },
+    });
+
+    if (!user) {
+      return res
+        .status(404)
+        .json({ error: "Não há nenhum usuário com este id" });
+    }
+
+    let updates = {};
+
+    if (req.body.name) {
+      updates = { ...updates, name: req.body.name };
+    }
+
+    if (req.body.email && req.body.email !== user.email) {
+      const emailAlreadyUsed = await client.user.findUnique({
+        where: { email: req.body.email },
+      });
+      if (emailAlreadyUsed) {
+        return res.status(409).json({
+          error: "Este email já esta cadastrado para outro usuário",
+        });
+      }
+      updates = { ...updates, email: req.body.email };
+    }
+
+    if (req.body.password) {
+      let password_hash = await bcrypt.hash(req.body.password, 8);
+      updates = { ...updates, password_hash };
+    }
+
+    const response = await client.user.update({
+      where: { id: req.body.id },
+      data: {
+        ...updates,
+      },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        created_at: true,
+        updated_at: true,
+      },
+    });
 
     return res.json(response);
   }
