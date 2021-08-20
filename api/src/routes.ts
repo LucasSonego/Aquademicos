@@ -2,6 +2,7 @@ import { Router } from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import authMiddleware from "./middlewares/auth";
+import adminsOnly from "./middlewares/admin";
 import UserController from "./controllers/UserController";
 import SessionController from "./controllers/SessionController";
 
@@ -20,6 +21,6 @@ routes.delete("/sessions", SessionController.delete);
 
 routes.get("/users", UserController.index);
 routes.put("/users", UserController.update);
-routes.put("/admin/users", UserController.adminUpdate);
+routes.put("/admin/users", adminsOnly, UserController.adminUpdate);
 
 export default routes;
