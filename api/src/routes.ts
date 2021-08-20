@@ -20,5 +20,6 @@ routes.delete("/sessions", SessionController.delete);
 
 routes.get("/users", UserController.index);
 routes.put("/users", UserController.update);
+routes.put("/admin/users", UserController.adminUpdate);
 
 export default routes;

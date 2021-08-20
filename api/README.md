@@ -16,11 +16,13 @@
 
 **Dados:**
 
-| Campo    | Tipo de dado | Requisitos                     | Obrigatório |
-| -------- | ------------ | ------------------------------ | ----------- |
-| name     | String       | -                              | sim         |
-| email    | String       | Formato de e-mail (xxx@xxx.xx) | sim         |
-| password | String       | Ao menos 6 caracteres          | sim         |
+| Campo        | Tipo de dado | Requisitos                     | Obrigatório           |
+| ------------ | ------------ | ------------------------------ | --------------------- |
+| name         | String       | -                              | sim                   |
+| email        | String       | Formato de e-mail (xxx@xxx.xx) | sim                   |
+| password     | String       | Ao menos 6 caracteres          | sim                   |
+| is_admin     | Boolean      | -                              | não                   |
+| admin_secret | String       | -                              | se `is_admin == true` |
 
 **Requisição:**
 
@@ -48,6 +50,7 @@ Rota: /users
 
 **Códigos de erros:**
 **409**: Email já está cadastrado para outro usuário
+**401**: Chave de cadastro de orientador incorreta
 
 ---
 
@@ -150,7 +153,49 @@ Rota: /users
 **401**: Senha antiga incorreta
 **409**: Email já esta cadastrado para outro usuário
 
+---
 
+#### Editar (orientador)
+
+**Dados:**
+
+| Campo    | Tipo de dado | Requisitos                    | Obrigatório |
+| -------- | ------------ | ----------------------------- | ----------- |
+| id       | String       | -                             | sim         |
+| name     | String       | -                             | não         |
+| email    | String       | Formato de email (xxx@xxx.xx) | não         |
+| password | String       | Ao menos 6 caracteres         | não         |
+
+**Requisição:**
+
+Método: PUT
+Rota: /admin/users
+(Usuário deve estar autenticado e deve ser um orientador)
+
+```json
+{
+  "id": "020374b6-3c1e-4723-b419-cd4a2d264697",
+  "name": "New User Name",
+  "email": "user1@mail.com",
+  "password": "654321"
+}
+```
+
+**Resposta:**
+
+```json
+{
+  "id": "020374b6-3c1e-4723-b419-cd4a2d264697",
+  "name": "New User Name",
+  "email": "user1@mail.com",
+  "created_at": "2021-08-17T17:17:22.402Z",
+  "updated_at": "2021-08-18T04:33:17.461Z"
+}
+```
+
+**Códigos de erros:**
+**403**: Apenas os orientadores podem realizar esta ação
+**409**: Email já esta cadastrado para outro usuário
 
 ---
 
