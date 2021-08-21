@@ -194,7 +194,7 @@ Rota: /admin/users
 ```
 
 **Códigos de erros:**
-**403**: Apenas os orientadores podem realizar esta ação
+**403**: Não é permitido alterar dados de outros orientadores
 **409**: Email já esta cadastrado para outro usuário
 
 ---

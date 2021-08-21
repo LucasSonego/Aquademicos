@@ -190,6 +190,12 @@ class UserController {
         .json({ error: "Não há nenhum usuário com este id" });
     }
 
+    if (user.is_admin === true) {
+      return res.status(403).json({
+        error: "Não é permitido alterar dados de outros orientadores",
+      });
+    }
+
     let updates = {};
 
     if (req.body.name) {
