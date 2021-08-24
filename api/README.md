@@ -10,30 +10,32 @@
 
 ### Users
 
----
-
 #### Criar
 
 **Dados:**
 
-| Campo        | Tipo de dado | Requisitos                     | Obrigatório           |
-| ------------ | ------------ | ------------------------------ | --------------------- |
-| name         | String       | -                              | sim                   |
-| email        | String       | Formato de e-mail (xxx@xxx.xx) | sim                   |
-| password     | String       | Ao menos 6 caracteres          | sim                   |
-| is_admin     | Boolean      | -                              | não                   |
-| admin_secret | String       | -                              | se `is_admin == true` |
+| Campo           | Tipo de dado | Requisitos                     | Obrigatório            |
+| --------------- | ------------ | ------------------------------ | ---------------------- |
+| name            | String       | -                              | sim                    |
+| email           | String       | Formato de e-mail (xxx@xxx.xx) | sim                    |
+| password        | String       | Ao menos 6 caracteres          | sim                    |
+| is_admin        | Boolean      | -                              | não                    |
+| admin_secret    | String       | -                              | se `is_admin == true`  |
+| school_class_id | String       | -                              | se `is_admin == false` |
 
 **Requisição:**
 
 Método: POST
 Rota: /users
 
+**Cadastro de estudante*
+
 ```json
 {
   "name": "User Name",
   "email": "user@mail.com",
-  "password": "123456"
+  "password": "123456",
+  "school_class_id": "9b4b494e-5c0e-4811-85e2-be14830d42e0"
 }
 ```
 
@@ -44,15 +46,50 @@ Rota: /users
   "id": "020374b6-3c1e-4723-b419-cd4a2d264697",
   "name": "User Name",
   "email": "user@mail.com",
+  "school_class": {
+    "id": "020374b6-3c1e-4723-b419-cd4a2d264697",
+    "name": "Turma 1"
+  },
   "created_at": "2021-08-17T17:17:22.402Z"
 }
 ```
 
+
+
+**Cadastro de Orientador*
+
+```json
+{
+  "name": "Admin Name",
+  "email": "admin@mail.com",
+  "password": "123456",
+  "is_admin": true,
+  "admin_secret": "adminsecret123"
+}
+```
+
+**Resposta:**
+
+```json
+{
+  "id": "f1954211-1edb-47d3-8b12-b52b06334b71",
+  "name": "Admin Name",
+  "email": "admin@mail.com",
+  "is_admin": true,
+  "created_at": "2021-08-20T15:36:52.402Z"
+}
+```
+
+
+
 **Códigos de erros:**
 **409**: Email já está cadastrado para outro usuário
+**404**: Não existe nenhuma turma com este id
 **401**: Chave de cadastro de orientador incorreta
 
 ---
+
+
 
 #### Buscar
 
@@ -77,8 +114,13 @@ Rota: /users
 ```json
 {
   "id": "020374b6-3c1e-4723-b419-cd4a2d264697",
-  "name": "User Name",
+  "name": "User 1",
   "email": "user@mail.com",
+  "is_admin": false,
+  "school_class": {
+    "id": "9b4b494e-5c0e-4811-85e2-be14830d42e0",
+    "name": "Turma 1"
+  },
   "created_at": "2021-08-17T17:17:22.402Z"
 }
 ```
@@ -98,14 +140,24 @@ Rota: /users
 [
   {
     "id": "020374b6-3c1e-4723-b419-cd4a2d264697",
-    "name": "User Name",
+    "name": "User 1",
     "email": "user@mail.com",
+    "is_admin": false,
+    "school_class": {
+      "id": "9b4b494e-5c0e-4811-85e2-be14830d42e0",
+      "name": "Turma 1"
+  	},	
     "created_at": "2021-08-17T17:17:22.402Z"
   },
   {
     "id": "fabee59b-8a67-4323-965d-0511e00b69a6",
-    "name": "user2",
+    "name": "User 2",
     "email": "user2@mail.com",
+    "is_admin": false,
+    "school_class": {
+      "id": "9b4b494e-5c0e-4811-85e2-be14830d42e0",
+      "name": "Turma 1"
+  	},	
     "created_at": "2021-08-17T03:04:46.899Z"
   },
 ]
@@ -113,16 +165,18 @@ Rota: /users
 
 ---
 
+
+
 #### Editar
 
 **Dados:**
 
-| Campo       | Tipo de dado | Requisitos                    | Obrigatório           |
-| ----------- | ------------ | ----------------------------- | --------------------- |
-| name        | String       | -                             | não                   |
-| email       | String       | Formato de email (xxx@xxx.xx) | não                   |
-| password    | String       | Ao menos 6 caracteres         | não                   |
-| oldPassword | String       | Senha antiga do usuário       | se `password != null` |
+| Campo        | Tipo de dado | Requisitos                    | Obrigatório           |
+| ------------ | ------------ | ----------------------------- | --------------------- |
+| name         | String       | -                             | não                   |
+| email        | String       | Formato de email (xxx@xxx.xx) | não                   |
+| password     | String       | Ao menos 6 caracteres         | não                   |
+| old_password | String       | Senha antiga do usuário       | se `password != null` |
 
 **Requisição:**
 
@@ -135,7 +189,7 @@ Rota: /users
   "name": "New User Name",
   "email": "user1@mail.com",
   "password": "654321",
-  "oldPassword": "123456"
+  "old_password": "123456"
 }
 ```
 
@@ -155,16 +209,19 @@ Rota: /users
 
 ---
 
+
+
 #### Editar (orientador)
 
 **Dados:**
 
-| Campo    | Tipo de dado | Requisitos                    | Obrigatório |
-| -------- | ------------ | ----------------------------- | ----------- |
-| id       | String       | -                             | sim         |
-| name     | String       | -                             | não         |
-| email    | String       | Formato de email (xxx@xxx.xx) | não         |
-| password | String       | Ao menos 6 caracteres         | não         |
+| Campo           | Tipo de dado | Requisitos                    | Obrigatório |
+| --------------- | ------------ | ----------------------------- | ----------- |
+| id              | String       | -                             | sim         |
+| name            | String       | -                             | não         |
+| email           | String       | Formato de email (xxx@xxx.xx) | não         |
+| password        | String       | Ao menos 6 caracteres         | não         |
+| school_class_id | String       | -                             | não         |
 
 **Requisição:**
 
@@ -177,7 +234,8 @@ Rota: /admin/users
   "id": "020374b6-3c1e-4723-b419-cd4a2d264697",
   "name": "New User Name",
   "email": "user1@mail.com",
-  "password": "654321"
+  "password": "654321",
+  "school_class_id": "9b4b494e-5c0e-4811-85e2-be14830d42e0"
 }
 ```
 
@@ -188,6 +246,10 @@ Rota: /admin/users
   "id": "020374b6-3c1e-4723-b419-cd4a2d264697",
   "name": "New User Name",
   "email": "user1@mail.com",
+  "school_class": {
+    "id": "9b4b494e-5c0e-4811-85e2-be14830d42e0",
+    "name": "Turma 1"
+  },
   "created_at": "2021-08-17T17:17:22.402Z",
   "updated_at": "2021-08-18T04:33:17.461Z"
 }
@@ -195,11 +257,14 @@ Rota: /admin/users
 
 **Códigos de erros:**
 **403**: Não é permitido alterar dados de outros orientadores
+**404**: Não existe nenhuma turma com este id
 **409**: Email já esta cadastrado para outro usuário
 
 ---
 
 ### Sessions
+
+
 
 #### Login
 
@@ -238,6 +303,8 @@ Serão criados 2 cookies, um contendo o *token*, que não poderá ser acessado c
 
 ---
 
+
+
 #### Logout
 
 **Requisição:**
@@ -254,6 +321,8 @@ Rota: /sessions
 Os cookies serão removidos e será retornado o código 200.
 
 ---
+
+
 
 #### Renew
 
