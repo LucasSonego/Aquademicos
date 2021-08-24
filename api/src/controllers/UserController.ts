@@ -16,6 +16,10 @@ class UserController {
         is: (is_admin) => is_admin === true,
         then: yup.string().required(),
       }),
+      school_class_id: yup.string().when("is_admin", {
+        is: (is_admin) => is_admin !== true,
+        then: yup.string().required(),
+      }),
     });
 
     if (!(await schema.isValid(req.body))) {
@@ -36,32 +40,66 @@ class UserController {
     });
 
     if (emailAlreadyUsed) {
-      return res.status(400).json({
+      return res.status(409).json({
         error: "Este email já está cadastrado para outro usuário",
       });
     }
 
     let password_hash = await bcrypt.hash(req.body.password, 8);
-    let is_admin = !!req.body.is_admin;
 
-    try {
-      const { id, name, email } = await client.user.create({
-        data: {
-          name: req.body.name,
-          email: req.body.email,
-          password_hash,
-          is_admin,
-        },
-      });
-      return res.send({
-        id,
-        name,
-        email,
-      });
-    } catch (error) {
-      return res.status(400).json({
-        error: error.name,
-      });
+    if (!req.body.is_admin) {
+      try {
+        const schoolClass = await client.schoolClass.findFirst({
+          where: { id: req.body.school_class_id, deleted_at: null },
+        });
+
+        if (!schoolClass) {
+          return res
+            .status(404)
+            .json({ error: "Não existe nenhuma turma com este id" });
+        }
+
+        const response = await client.user.create({
+          data: {
+            name: req.body.name,
+            email: req.body.email,
+            password_hash,
+            school_class_id: req.body.school_class_id,
+          },
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            school_class: { select: { id: true, name: true } },
+            created_at: true,
+          },
+        });
+        return res.json(response);
+      } catch (error) {
+        console.log(error);
+        return res.sendStatus(500);
+      }
+    } else {
+      try {
+        const response = await client.user.create({
+          data: {
+            name: req.body.name,
+            email: req.body.email,
+            password_hash,
+            is_admin: true,
+          },
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            is_admin: true,
+            created_at: true,
+          },
+        });
+        return res.json(response);
+      } catch {
+        return res.sendStatus(500);
+      }
     }
   }
 
@@ -73,6 +111,8 @@ class UserController {
           id: true,
           name: true,
           email: true,
+          is_admin: true,
+          school_class: { select: { id: true, name: true } },
           created_at: true,
         },
       });
@@ -90,6 +130,8 @@ class UserController {
         id: true,
         name: true,
         email: true,
+        is_admin: true,
+        school_class: { select: { id: true, name: true } },
         created_at: true,
       },
     });
@@ -102,7 +144,7 @@ class UserController {
       name: yup.string(),
       email: yup.string().email(),
       password: yup.string().min(6),
-      oldPassword: yup
+      old_password: yup
         .string()
         .min(6)
         .when("password", {
@@ -134,8 +176,10 @@ class UserController {
     }
 
     if (req.body.password) {
-      if (req.body.oldPassword) {
-        if (!(await bcrypt.compare(req.body.oldPassword, user.password_hash))) {
+      if (req.body.old_password) {
+        if (
+          !(await bcrypt.compare(req.body.old_password, user.password_hash))
+        ) {
           return res.status(401).json({
             error: "Senha antiga incorreta",
           });
@@ -172,6 +216,7 @@ class UserController {
       name: yup.string(),
       email: yup.string().email(),
       password: yup.string().min(6),
+      school_class_id: yup.string(),
     });
 
     if (!(await schema.isValid(req.body))) {
@@ -214,6 +259,23 @@ class UserController {
       updates = { ...updates, email: req.body.email };
     }
 
+    if (req.body.school_class_id) {
+      const schoolClass = await client.schoolClass.findFirst({
+        where: { id: req.body.school_class_id, deleted_at: null },
+      });
+
+      if (!schoolClass) {
+        return res
+          .status(404)
+          .json({ error: "Não existe nenhuma turma com este id" });
+      }
+
+      updates = {
+        ...updates,
+        school_class_id: req.body.school_class_id,
+      };
+    }
+
     if (req.body.password) {
       let password_hash = await bcrypt.hash(req.body.password, 8);
       updates = { ...updates, password_hash };
@@ -228,6 +290,7 @@ class UserController {
         id: true,
         email: true,
         name: true,
+        school_class: { select: { id: true, name: true } },
         created_at: true,
         updated_at: true,
       },

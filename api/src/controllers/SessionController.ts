@@ -20,7 +20,16 @@ class SessionController {
       });
     }
     const { email, password } = req.body;
-    const user = await client.user.findFirst({ where: { email } });
+    const user = await client.user.findFirst({
+      where: { email },
+      select: {
+        id: true,
+        name: true,
+        is_admin: true,
+        password_hash: true,
+        school_class: { select: { id: true, name: true } },
+      },
+    });
 
     if (!user) {
       return res.status(401).json({
@@ -40,6 +49,17 @@ class SessionController {
       expiresIn: process.env.TOKEN_VALIDITY,
     });
 
+    let response: any = {
+      id,
+      name,
+      email,
+    };
+    if (!user.is_admin) {
+      response = { ...response, school_class: user.school_class };
+    } else {
+      response = { ...response, is_admin: true };
+    }
+
     return res
       .cookie("token", token, {
         expires: new Date(
@@ -54,23 +74,27 @@ class SessionController {
             TimeMagnitude.toMilliseconds(process.env.TOKEN_VALIDITY)
         ),
       })
-      .json({
-        id,
-        name,
-        email,
-      });
+      .json(response);
   }
 
   async index(req: AuthenticatedRequest, res: Response) {
-    const { id, name, email } = await client.user.findFirst({
+    const user = await client.user.findFirst({
       where: { id: req.userId },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        is_admin: true,
+        password_hash: true,
+        school_class: { select: { id: true, name: true } },
+      },
     });
 
-    if (!id) {
+    if (!user) {
       return res.sendStatus(500);
     }
 
-    const token = jwt.sign({ id }, process.env.APP_SECRET, {
+    const token = jwt.sign({ id: user.id }, process.env.APP_SECRET, {
       expiresIn: process.env.TOKEN_VALIDITY,
     });
 
@@ -79,6 +103,17 @@ class SessionController {
         TimeMagnitude.toMilliseconds(process.env.TOKEN_VALIDITY)
     );
 
+    let response: any = {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+    };
+    if (user.is_admin) {
+      response = { ...response, is_admin: true };
+    } else {
+      response = { ...response, school_class: user.school_class };
+    }
+
     return res
       .cookie("token", token, {
         expires: tokenValidity,
@@ -87,11 +122,7 @@ class SessionController {
       .cookie("authenticated", true, {
         expires: tokenValidity,
       })
-      .json({
-        id,
-        name,
-        email,
-      });
+      .json(response);
   }
 
   async delete(_req: AuthenticatedRequest, res: Response) {
