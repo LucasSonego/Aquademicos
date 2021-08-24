@@ -3,10 +3,10 @@
 #### Índice
 
 - [Users](#Users)
-
 - [Sessions](#Sessions)
+- [School Classes](#School\ Classes)
 
-  
+---
 
 ### Users
 
@@ -280,4 +280,222 @@ Os cookies de autenticação serão atualizados.
 
 **Códigos de erros:**
 **401**: A sessão expirou
+
+---
+
+### School Classes
+
+#### Criar
+
+**Dados:**
+
+| Campo | Tipo de dado | Requisitos | Obrigatório |
+| ----- | ------------ | ---------- | ----------- |
+| name  | String       | -          | sim         |
+
+**Requisição:**
+
+Método: POST
+Rota: /school_classes
+(Usuário deve estar autenticado e deve ser um orientador)
+
+```json
+{
+  "name": "Turma 1",
+}
+```
+
+**Resposta:**
+
+```json
+{
+  "id": "9b4b494e-5c0e-4811-85e2-be14830d42e0",
+  "name": "Turma 1",
+  "created_at": "2021-08-20T20:08:59.169Z"
+}
+```
+
+---
+
+
+
+#### Listar (publico)
+
+**Requisição:**
+
+Método: GET
+Rota: /school_classes_public
+
+**Resposta:**
+
+```json
+[
+  {
+    "id": "9b4b494e-5c0e-4811-85e2-be14830d42e0",
+    "name": "Turma 3"
+  },
+  {
+    "id": "d01bb365-2c56-49e1-9303-17f1c39b3dfc",
+    "name": "Turma 2"
+  },
+  {
+    "id": "b18793a3-b670-4421-8667-69c98c97f1c6",
+    "name": "Turma 1"
+  }
+]
+```
+
+*As turmas serão ordenadas com base na data em que foram criadas, da mais recente a mais antiga
+
+---
+
+
+
+#### Listar (orientador)
+
+**Dados:**
+
+| Campo       | Tipo de dado | Requisitos | Obrigatório |
+| ----------- | ------------ | ---------- | ----------- |
+| get_deleted | Boolean      | -          | não         |
+
+**Requisições:**
+
+Método: GET
+Rota: /school_classes
+(Usuário deve estar autenticado e deve ser um orientador)
+
+```json
+<URL_BASE>/school_classes
+```
+
+**Resposta:**
+
+```json
+[
+  {
+    "id": "b18793a3-b670-4421-8667-69c98c97f1c6",
+    "name": "Turma 1",
+    "created_at": "2021-08-20T05:08:22.366Z",
+    "updated_at": "2021-08-20T05:08:22.366Z",
+    "students": []
+  },
+  {
+    "id": "d01bb365-2c56-49e1-9303-17f1c39b3dfc",
+    "name": "Turma 2",
+    "created_at": "2021-08-20T20:08:55.662Z",
+    "updated_at": "2021-08-20T20:08:55.662Z",
+    "students": [
+      {
+        "id": "020374b6-3c1e-4723-b419-cd4a2d264697",
+        "name": "User 1",
+        "email": "user@mail.com"
+      },
+      {
+        "id": "fabee59b-8a67-4323-965d-0511e00b69a6",
+        "name": "User 2",
+        "email": "user2@mail.com"
+      }
+    ]
+  }
+]
+```
+
+
+
+```json
+<URL_BASE>/school_classes?getDeleted=true
+```
+
+**Resposta:**
+
+```json
+[
+  {
+    "id": "9b4b494e-5c0e-4811-85e2-be14830d42e0",
+    "name": "Turma 3",
+    "created_at": "2021-08-20T05:09:23.636Z",
+    "deleted_at": "2021-08-20T05:10:06.576Z",
+    "deleted_by": {
+      "id": "f1954211-1edb-47d3-8b12-b52b06334b71",
+      "name": "Admin 1",
+      "email": "admin@mail.com"
+    }
+  }
+]
+```
+
+---
+
+
+
+#### Deletar
+
+**Dados:**
+
+| Campo | Tipo de dado | Requisitos | Obrigatório |
+| ----- | ------------ | ---------- | ----------- |
+| id    | String       | -          | sim         |
+
+**Requisição:**
+
+Método: DELETE
+Rota: /school_classes
+(Usuário deve estar autenticado e deve ser um orientador)
+
+```json
+{
+  "id": "9b4b494e-5c0e-4811-85e2-be14830d42e0"
+}
+```
+
+**Resposta:**
+
+```json
+{
+  "id": "9b4b494e-5c0e-4811-85e2-be14830d42e0",
+  "name": "Turma 3",
+  "created_at": "2021-08-20T05:09:23.636Z",
+  "updated_at": "2021-08-21T22:00:03.574Z",
+  "deleted_at": "2021-08-21T22:00:03.572Z",
+  "deleted_by_id": "f1954211-1edb-47d3-8b12-b52b06334b71"
+}
+```
+
+---
+
+
+
+#### Restaurar
+
+**Dados:**
+
+| Campo | Tipo de dado | Requisitos | Obrigatório |
+| ----- | ------------ | ---------- | ----------- |
+| id    | String       | -          | sim         |
+
+**Requisição:**
+
+Método: PATCH
+Rota: /school_classes
+(Usuário deve estar autenticado e deve ser um orientador)
+
+```json
+{
+  "id": "9b4b494e-5c0e-4811-85e2-be14830d42e0"
+}
+```
+
+**Resposta:**
+
+```json
+{
+  "id": "9b4b494e-5c0e-4811-85e2-be14830d42e0",
+  "name": "Turma 3",
+  "created_at": "2021-08-20T05:09:23.636Z",
+  "updated_at": "2021-08-21T22:02:12.574Z",
+  "deleted_at": null,
+  "deleted_by_id": null
+}
+```
 

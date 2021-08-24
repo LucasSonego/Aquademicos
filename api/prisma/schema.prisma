@@ -8,14 +8,29 @@ generator client {
 }
 
 model User {
-  id            String   @id @default(uuid())
-  name          String
-  email         String   @unique
-  password_hash String
-  is_admin      Boolean  @default(false)
-  created_at    DateTime @default(now())
-  updated_at    DateTime @updatedAt
+  id                     String        @id @default(uuid())
+  name                   String
+  email                  String        @unique
+  password_hash          String
+  is_admin               Boolean       @default(false)
+  school_class_id        String?
+  school_class           SchoolClass?  @relation("students", fields: [school_class_id], references: [id])
+  created_at             DateTime      @default(now())
+  updated_at             DateTime      @updatedAt
+  deleted_school_classes SchoolClass[]
 
   @@map("users")
 }
 
+model SchoolClass {
+  id            String    @id @unique @default(uuid())
+  name          String    @unique
+  students      User[]    @relation("students")
+  created_at    DateTime  @default(now())
+  updated_at    DateTime  @updatedAt
+  deleted_at    DateTime?
+  deleted_by_id String?
+  deleted_by    User?     @relation(fields: [deleted_by_id], references: [id])
+
+  @@map("school_classes")
+}
