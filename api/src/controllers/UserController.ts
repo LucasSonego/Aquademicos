@@ -103,7 +103,7 @@ class UserController {
     }
   }
 
-  async index(req: Request, res: Response) {
+  async index(req: AuthenticatedRequest, res: Response) {
     if (req.query.id) {
       let user = await client.user.findFirst({
         where: { id: `${req.query.id}` },
@@ -125,18 +125,41 @@ class UserController {
           .json({ error: "Não existe nenhum usuário com o id buscado" });
     }
 
-    let response = await client.user.findMany({
+    if (req.query.all) {
+      let response = await client.user.findMany({
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          is_admin: true,
+          school_class: { select: { id: true, name: true } },
+          created_at: true,
+        },
+      });
+
+      return res.json(response);
+    }
+
+    let userData = await client.user.findFirst({
+      where: { id: req.userId },
       select: {
         id: true,
-        name: true,
         email: true,
+        name: true,
         is_admin: true,
-        school_class: { select: { id: true, name: true } },
+        school_class: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
         created_at: true,
       },
     });
 
-    return res.json(response);
+    if (!userData) return res.sendStatus(500);
+
+    return res.json(userData);
   }
 
   async update(req: AuthenticatedRequest, res: Response) {
@@ -144,13 +167,10 @@ class UserController {
       name: yup.string(),
       email: yup.string().email(),
       password: yup.string().min(6),
-      old_password: yup
-        .string()
-        .min(6)
-        .when("password", {
-          is: (password) => password !== null,
-          then: yup.string().min(6).required(),
-        }),
+      old_password: yup.string().when("password", {
+        is: (password) => !!password,
+        then: yup.string().min(6).required(),
+      }),
     });
 
     if (!(await schema.isValid(req.body))) {

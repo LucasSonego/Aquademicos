@@ -98,6 +98,7 @@ Rota: /users
 | Campo | Tipo de dado | Requisitos | Obrigatório |
 | ----- | ------------ | ---------- | ----------- |
 | id    | String       | -          | não         |
+| all   | Boolean      | -          | não         |
 
 **Requisições:**
 
@@ -105,8 +106,10 @@ Método: GET
 Rota: /users
 (Usuário deve estar autenticado)
 
-```
-<URL_BASE>/users?id="020374b6-3c1e-4723-b419-cd4a2d264697"
+_*Buscar dados do usuário logado_
+
+```json
+<URL_BASE>/users
 ```
 
 **Resposta:**
@@ -120,8 +123,32 @@ Rota: /users
   "school_class": {
     "id": "9b4b494e-5c0e-4811-85e2-be14830d42e0",
     "name": "Turma 1"
-  },
+  },	
   "created_at": "2021-08-17T17:17:22.402Z"
+}
+```
+
+
+
+_*Buscar dados de um usuário_
+
+```json
+<URL_BASE>/users?id="fabee59b-8a67-4323-965d-0511e00b69a6"
+```
+
+**Resposta:**
+
+```json
+{
+  "id": "fabee59b-8a67-4323-965d-0511e00b69a6",
+  "name": "User 2",
+  "email": "user2@mail.com",
+  "is_admin": false,
+  "school_class": {
+    "id": "9b4b494e-5c0e-4811-85e2-be14830d42e0",
+    "name": "Turma 1"
+  },
+  "created_at": "2021-08-17T03:04:46.899Z"
 }
 ```
 
@@ -130,8 +157,10 @@ Rota: /users
 
 
 
+_*Listar todos os usuários_
+
 ```json
-<URL_BASE>/users
+<URL_BASE>/users?all=true
 ```
 
 **Resposta:**
