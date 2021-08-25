@@ -27,6 +27,13 @@ export const Container = styled.div`
             color: #006bff;
           }
         `
+      : props.warning
+      ? css`
+          border-bottom: 2px solid #e74c3c;
+          svg {
+            color: #e74c3c;
+          }
+        `
       : css`
           border-bottom: 2px solid #ddd;
         `}
