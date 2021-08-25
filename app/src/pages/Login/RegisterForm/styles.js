@@ -9,6 +9,8 @@ export const Container = styled.div`
       margin-top: 2px;
       border: none !important;
       padding-left: 10px;
+      box-shadow: none !important;
+
       .default and .text {
         font-family: inherit !important;
         font-weight: 500 !important;
@@ -29,15 +31,20 @@ export const Container = styled.div`
       margin: 0 0 0 10px;
     }
     border-bottom: 2px solid #ddd;
-    margin-bottom: 10px;
   }
   .input-wrapper {
-    margin-bottom: 10px;
+    margin-top: 10px;
+  }
+
+  .bottom-warning {
+    color: #e74c3c;
+    min-height: 20px;
+    font-size: 14px;
+    margin: 5px 0;
   }
 
   .submit-btn {
     cursor: pointer;
-    margin-top: 10px;
     font-family: inherit;
     font-weight: 600;
     font-size: 18px;

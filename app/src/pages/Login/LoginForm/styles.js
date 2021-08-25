@@ -1,13 +1,19 @@
 import styled from "styled-components";
 
 export const Container = styled.form`
-  div {
+  div:first-child {
     margin-bottom: 20px;
+  }
+
+  p {
+    color: #e74c3c;
+    min-height: 20px;
+    font-size: 14px;
+    margin: 5px 0;
   }
 
   button {
     cursor: pointer;
-    margin-top: 10px;
     font-family: inherit;
     font-weight: 600;
     font-size: 18px;
