@@ -28,10 +28,10 @@ const LoginForm: React.FC = () => {
         password: password,
       })
       .then((response) => {
-        response.status === 200 && history.push("/");
+        response?.status === 200 && history.push("/");
       })
       .catch((err) => {
-        if (err.response.status === 401) {
+        if (err?.response?.status === 401) {
           setWarning("Email ou senha incorretos");
           setInputsWarning(true);
         }
