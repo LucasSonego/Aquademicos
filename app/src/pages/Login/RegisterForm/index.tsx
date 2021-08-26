@@ -78,7 +78,7 @@ const RegisterForm: React.FC = () => {
           });
       })
       .catch((error) => {
-        if (error.response.status === 409) {
+        if (error?.response?.status === 409) {
           setEmailWarning(true);
           setBottomWarning("Este email já está cadastrado para outro usuário");
         }
