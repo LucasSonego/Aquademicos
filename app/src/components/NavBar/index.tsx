@@ -28,10 +28,10 @@ const Nav: React.FC = () => {
       visible={!notVisibleOn.find((route) => route === location.pathname)}
     >
       <div className="navigation">
-        <Link to="user">
-          <Tab selected={location.pathname === "/user"}>
+        <Link to="aluno">
+          <Tab selected={location.pathname === "/aluno"}>
             <AiOutlineUser />
-            <span className="label">Usuário</span>
+            <span className="label">Aluno</span>
           </Tab>
         </Link>
         <Link to="conteudo">

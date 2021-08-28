@@ -28,7 +28,7 @@ const LoginForm: React.FC = () => {
         password: password,
       })
       .then((response) => {
-        response?.status === 200 && history.push("/");
+        response?.status === 200 && history.push("/aluno");
       })
       .catch((err) => {
         if (err?.response?.status === 401) {
