@@ -4,7 +4,7 @@ import { Container, Input } from "./styles";
 
 interface IProps {
   type: "email" | "number" | "text" | "password";
-  placeholder: string;
+  placeholder?: string;
   value: string;
   onChange: (value: string) => void;
   warning?: boolean;
@@ -31,7 +31,7 @@ const InputWithIcon: React.FC<IProps> = (props) => {
       {props.children}
       <Input
         type={props.type}
-        placeholder={props.placeholder}
+        placeholder={props.placeholder ? props.placeholder : ""}
         value={props.value}
         onChange={(event) => props.onChange(event.target.value)}
         ref={inputEl}
