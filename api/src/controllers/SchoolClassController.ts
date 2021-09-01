@@ -56,6 +56,7 @@ class SchoolClassController {
           updated_at: true,
           students: { select: { id: true, name: true, email: true } },
         },
+        orderBy: { created_at: "desc" },
       });
       return res.json(schoolClasses);
     } else {
@@ -70,6 +71,7 @@ class SchoolClassController {
           deleted_at: true,
           deleted_by: { select: { id: true, name: true, email: true } },
         },
+        orderBy: { deleted_at: "desc" },
       });
       return res.json(schoolClasses);
     }
