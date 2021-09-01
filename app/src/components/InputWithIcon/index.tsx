@@ -37,6 +37,7 @@ const InputWithIcon: React.FC<IProps> = (props) => {
         ref={inputEl}
         onBlur={() => setFocus(false)}
         focus={focus}
+        onFocus={() => !focus && setFocus(true)}
       />
     </Container>
   );
