@@ -1,28 +1,14 @@
 import React from "react";
+
 import useFetch from "../../hooks/useFetch";
 import CreateClass from "./CreateClass";
 import SchoolClass from "./SchoolClass";
+import { SchoolClassData } from "./interfaces";
 
 import { Page, Container } from "./styles";
 
-interface SchoolClassData {
-  id: string;
-  name: string;
-  created_at: string;
-  updated_at: string;
-  students?: [
-    {
-      id: string;
-      name: string;
-      email: string;
-    }
-  ];
-}
-
-type SchoolClassesData = SchoolClassData[];
-
 const SchoolClasses: React.FC = () => {
-  const { data, mutate }: { data: SchoolClassesData; mutate: any } = useFetch({
+  const { data, mutate }: { data: SchoolClassData[]; mutate: any } = useFetch({
     path: "/school_classes",
     params: {},
   });
