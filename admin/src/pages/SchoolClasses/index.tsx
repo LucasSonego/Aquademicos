@@ -40,10 +40,13 @@ const SchoolClasses: React.FC = () => {
         {data &&
           data?.map((schoolClass) => (
             <SchoolClass
+              key={schoolClass.id}
               id={schoolClass.id}
               name={schoolClass.name}
               students={schoolClass.students}
-              key={schoolClass.id}
+              schoolClassList={data.map((schoolClass: SchoolClassData) => {
+                return { id: schoolClass.id, name: schoolClass.name };
+              })}
               onUpdate={(newData) => onUpdateSchoolClass(newData)}
               onDelete={(deletedId) => onDeleteSchoolClass(deletedId)}
             />

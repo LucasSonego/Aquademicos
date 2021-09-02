@@ -63,21 +63,6 @@ export const Container = styled.div`
     margin: 10px 0 0 0;
   }
 
-  .student {
-    margin-top: 5px;
-    background: #f6f6f6;
-    border-radius: 5px;
-    padding: 10px;
-
-    p {
-      margin: 0;
-    }
-
-    span {
-      color: #777;
-    }
-  }
-
   .controls {
     margin-top: 15px;
 
