@@ -12,6 +12,7 @@ export const Container = styled.div`
     padding: 10px;
     border-radius: 14px;
     box-sizing: border-box;
+    box-shadow: 0px 0px 20px 1px #3338;
   }
 
   // MOBILE
