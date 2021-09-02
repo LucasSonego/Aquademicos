@@ -2,8 +2,8 @@ import { store } from "react-notifications-component";
 // import NotificationBody from "./customNotificationBody"; // para corpo customizado
 
 interface NotificationOptions {
-  title: string;
-  message: string;
+  title?: string;
+  message?: string;
   type: "success" | "danger" | "info" | "default" | "warning";
 }
 
@@ -16,8 +16,8 @@ export default function showNotification(params: NotificationOptions) {
   //   />
   // );
   store.addNotification({
-    title: params.title,
-    message: params.message,
+    title: params.title || " ",
+    message: params.message || " ",
     type: params.type,
     //content, //custom body
     insert: "top",
