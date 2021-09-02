@@ -26,6 +26,23 @@ const SchoolClasses: React.FC = () => {
     path: "/school_classes",
     params: {},
   });
+
+  function onUpdateSchoolClass(newData: SchoolClassData) {
+    let updatedData: SchoolClassData[] = [...data];
+    let updatedClassIndex = updatedData.findIndex(
+      (item) => item.id === newData.id
+    );
+    updatedData.splice(updatedClassIndex, 1, newData);
+    mutate([...updatedData], true);
+  }
+
+  function onDeleteSchoolClass(id: string) {
+    let updatedData: SchoolClassData[] = [...data];
+    let deletedClassIndex = updatedData.findIndex((item) => item.id === id);
+    updatedData.splice(deletedClassIndex, 1);
+    mutate([...updatedData], true);
+  }
+
   return (
     <Page>
       <Container>
@@ -41,6 +58,8 @@ const SchoolClasses: React.FC = () => {
               name={schoolClass.name}
               students={schoolClass.students}
               key={schoolClass.id}
+              onUpdate={(newData) => onUpdateSchoolClass(newData)}
+              onDelete={(deletedId) => onDeleteSchoolClass(deletedId)}
             />
           ))}
       </Container>
