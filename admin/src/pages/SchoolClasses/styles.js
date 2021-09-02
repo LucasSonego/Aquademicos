@@ -15,8 +15,8 @@ export const Page = styled.div`
   }
 
   @media (max-width: 750px) {
-    padding-bottom: 95px;
     padding: 10px;
+    padding-bottom: 95px;
     background: linear-gradient(120deg, #006bff, #0059d4);
   }
 `;

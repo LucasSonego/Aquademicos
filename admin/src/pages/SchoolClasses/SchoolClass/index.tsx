@@ -8,13 +8,19 @@ import { Container } from "./styles";
 import api from "../../../services/api";
 import { useEffect } from "react";
 import showNotification from "../../../components/Notification";
+import Student from "./Student";
 import {
   SchoolClassData,
+  SimplifiedSchoolClassData,
+  StudentData,
+} from "../interfaces";
 
 interface Props {
   id: string;
   name: string;
   students?: StudentData[];
+  schoolClassList: SimplifiedSchoolClassData[];
+  onUpdate: (data: SchoolClassData) => void;
   onDelete: (id: string) => void;
 }
 
@@ -53,6 +59,41 @@ const SchoolClass: React.FC<Props> = (props) => {
     });
   }
 
+  function handleUserUpdate(userData: {
+    id: string;
+    name: string;
+    email: string;
+  }) {
+    let updatedStudents = [...props.students];
+    let updatedUserId = updatedStudents.findIndex(
+      (student) => student.id === userData.id
+    );
+    updatedStudents.splice(updatedUserId, 1, {
+      id: userData.id,
+      name: userData.name,
+      email: userData.email,
+    });
+
+    props.onUpdate({
+      id: props.id,
+      name: props.name,
+      students: [...updatedStudents],
+    });
+  }
+
+  function handleUserMoved(userId: string) {
+    let updatedStudents = [...props.students];
+    let movedUserId = updatedStudents.findIndex(
+      (student) => student.id === userId
+    );
+    updatedStudents.splice(movedUserId, 1);
+    props.onUpdate({
+      id: props.id,
+      name: props.name,
+      students: [...updatedStudents],
+    });
+  }
+
   return (
     <Container>
       <div className="headers">
@@ -85,10 +126,16 @@ const SchoolClass: React.FC<Props> = (props) => {
           {listStudents && (
             <ul>
               {props.students.map((student) => (
-                <li className="student" key={student.id}>
-                  <p>{student.name}</p>
-                  <span>{student.email}</span>
-                </li>
+                <Student
+                  key={student.id}
+                  id={student.id}
+                  name={student.name}
+                  email={student.email}
+                  schoolClassId={props.id}
+                  schoolClassList={props.schoolClassList}
+                  onUpdate={(userData) => handleUserUpdate(userData)}
+                  onMove={(userId) => handleUserMoved(userId)}
+                />
               ))}
             </ul>
           )}

@@ -1,3 +1,8 @@
+export interface SimplifiedSchoolClassData {
+  id: string;
+  name: string;
+}
+
 export interface StudentData {
   id: string;
   name: string;
