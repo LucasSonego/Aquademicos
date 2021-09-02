@@ -8,18 +8,13 @@ import { Container } from "./styles";
 import api from "../../../services/api";
 import { useEffect } from "react";
 import showNotification from "../../../components/Notification";
+import {
+  SchoolClassData,
 
 interface Props {
   id: string;
   name: string;
-  students?: [
-    {
-      id: string;
-      name: string;
-      email: string;
-    }
-  ];
-  onUpdate: (data) => void;
+  students?: StudentData[];
   onDelete: (id: string) => void;
 }
 
