@@ -27,7 +27,8 @@ routes.put("/admin/users", adminsOnly, UserController.adminUpdate);
 
 routes.post("/school_classes", adminsOnly, SchoolClassController.store);
 routes.get("/school_classes", adminsOnly, SchoolClassController.index);
-routes.delete("/school_classes", adminsOnly, SchoolClassController.delete);
-routes.patch("/school_classes", adminsOnly, SchoolClassController.restore);
+routes.put("/school_classes/:id", adminsOnly, SchoolClassController.update);
+routes.delete("/school_classes/:id", adminsOnly, SchoolClassController.delete);
+routes.patch("/school_classes/:id", adminsOnly, SchoolClassController.restore);
 
 export default routes;

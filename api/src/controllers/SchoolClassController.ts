@@ -94,19 +94,49 @@ class SchoolClassController {
     return res.sendStatus(500);
   }
 
-  async delete(req: AuthenticatedRequest, res: Response) {
+  async update(req: Request, res: Response) {
     const schema = yup.object().shape({
-      id: yup.string().required(),
+      name: yup.string(),
     });
 
-    if (!(await schema.isValid(req.body))) {
+    if (!(await schema.isValid(req.query))) {
       return res.status(400).json({
         error: "Um ou mais campos não foram preenchidos corretamente",
       });
     }
 
     const validSchoolClass = await client.schoolClass.findUnique({
-      where: { id: req.body.id },
+      where: { id: req.params.id },
+    });
+
+    if (!validSchoolClass) {
+      return res
+        .status(404)
+        .json({ error: "Não há nenhuma turma com este id" });
+    }
+
+    const updatedSchoolClass = await client.schoolClass.update({
+      where: {
+        id: req.params.id,
+      },
+      data: {
+        name: req.body.name,
+      },
+      select: {
+        id: true,
+        name: true,
+        created_at: true,
+        updated_at: true,
+        students: { select: { id: true, name: true, email: true } },
+      },
+    });
+
+    return res.json(updatedSchoolClass);
+  }
+
+  async delete(req: AuthenticatedRequest, res: Response) {
+    const validSchoolClass = await client.schoolClass.findUnique({
+      where: { id: req.params.id },
     });
 
     if (!validSchoolClass) {
@@ -116,7 +146,7 @@ class SchoolClassController {
     }
 
     const deletedSchoolClass = await client.schoolClass.update({
-      where: { id: req.body.id },
+      where: { id: req.params.id },
       data: {
         deleted_at: new Date(),
         deleted_by_id: req.userId,
@@ -127,18 +157,8 @@ class SchoolClassController {
   }
 
   async restore(req: AuthenticatedRequest, res: Response) {
-    const schema = yup.object().shape({
-      id: yup.string().required(),
-    });
-
-    if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({
-        error: "Um ou mais campos não foram preenchidos corretamente",
-      });
-    }
-
     const validSchoolClass = await client.schoolClass.findUnique({
-      where: { id: req.body.id },
+      where: { id: req.params.id },
     });
 
     if (!validSchoolClass) {
@@ -148,7 +168,7 @@ class SchoolClassController {
     }
 
     const deletedSchoolClass = await client.schoolClass.update({
-      where: { id: req.body.id },
+      where: { id: req.params.id },
       data: {
         deleted_at: null,
         deleted_by_id: null,
