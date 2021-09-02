@@ -525,26 +525,22 @@ Rota: /school_classes
 
 ---
 
-
-
-#### Deletar
+#### Editar
 
 **Dados:**
 
 | Campo | Tipo de dado | Requisitos | Obrigatório |
 | ----- | ------------ | ---------- | ----------- |
-| id    | String       | -          | sim         |
+| name  | String       | -          | não         |
 
 **Requisição:**
 
-Método: DELETE
+Método: PUT
 Rota: /school_classes
 (Usuário deve estar autenticado e deve ser um orientador)
 
-```json
-{
-  "id": "9b4b494e-5c0e-4811-85e2-be14830d42e0"
-}
+```xml
+<URL_BASE>/school_classes/9b4b494e-5c0e-4811-85e2-be14830d42e0
 ```
 
 **Resposta:**
@@ -560,17 +556,48 @@ Rota: /school_classes
 }
 ```
 
+**Códigos de erros:**
+**404**: Não há nenhuma turma com este id
+
+---
+
+
+
+
+
+#### Deletar
+
+**Requisição:**
+
+Método: DELETE
+Rota: /school_classes
+(Usuário deve estar autenticado e deve ser um orientador)
+
+```xml
+<URL_BASE>/school_classes/9b4b494e-5c0e-4811-85e2-be14830d42e0
+```
+
+**Resposta:**
+
+```json
+{
+  "id": "9b4b494e-5c0e-4811-85e2-be14830d42e0",
+  "name": "Turma 3",
+  "created_at": "2021-08-20T05:09:23.636Z",
+  "updated_at": "2021-08-21T22:00:03.574Z",
+  "deleted_at": "2021-08-21T22:00:03.572Z",
+  "deleted_by_id": "f1954211-1edb-47d3-8b12-b52b06334b71"
+}
+```
+
+**Códigos de erros:**
+**404**: Não há nenhuma turma com este id
+
 ---
 
 
 
 #### Restaurar
-
-**Dados:**
-
-| Campo | Tipo de dado | Requisitos | Obrigatório |
-| ----- | ------------ | ---------- | ----------- |
-| id    | String       | -          | sim         |
 
 **Requisição:**
 
@@ -578,10 +605,8 @@ Método: PATCH
 Rota: /school_classes
 (Usuário deve estar autenticado e deve ser um orientador)
 
-```json
-{
-  "id": "9b4b494e-5c0e-4811-85e2-be14830d42e0"
-}
+```xml
+<URL_BASE>/school_classes/9b4b494e-5c0e-4811-85e2-be14830d42e0
 ```
 
 **Resposta:**
@@ -596,4 +621,7 @@ Rota: /school_classes
   "deleted_by_id": null
 }
 ```
+
+**Códigos de erros:**
+**404**: Não há nenhuma turma com este id
 
