@@ -389,7 +389,7 @@ Os cookies de autenticação serão atualizados.
 
 | Campo | Tipo de dado | Requisitos | Obrigatório |
 | ----- | ------------ | ---------- | ----------- |
-| name  | String       | -          | sim         |
+| name  | String       | único      | sim         |
 
 **Requisição:**
 
@@ -412,6 +412,9 @@ Rota: /school_classes
   "created_at": "2021-08-20T20:08:59.169Z"
 }
 ```
+
+**Códigos de erros:**
+**409**: Já existe outra turma com este nome
 
 ---
 
