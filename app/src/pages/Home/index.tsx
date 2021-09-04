@@ -7,7 +7,7 @@ const Home: React.FC = () => {
 
   useEffect(() => {
     if (document.cookie.includes("authenticated")) {
-      history.push("/dados");
+      history.push("/aluno");
     } else {
       history.push("/login");
     }
