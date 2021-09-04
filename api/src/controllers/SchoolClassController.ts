@@ -15,6 +15,18 @@ class SchoolClassController {
       });
     }
 
+    const nameAlreadyUsed = await client.schoolClass.findFirst({
+      where: {
+        name: req.body.name,
+      },
+    });
+
+    if (nameAlreadyUsed) {
+      return res.status(409).json({
+        error: "Já existe outra turma com este nome",
+      });
+    }
+
     const schoolClass = await client.schoolClass.create({
       data: {
         name: `${req.body.name}`,

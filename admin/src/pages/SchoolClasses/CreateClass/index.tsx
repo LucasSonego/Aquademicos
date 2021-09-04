@@ -15,6 +15,7 @@ interface Props {
 const CreateClass: React.FC<Props> = (props) => {
   const [expanded, setExpanded] = useState(false);
   const [name, setName] = useState("");
+  const [warning, setWarning] = useState("");
 
   async function handleCreateSchoolClass() {
     if (name) {
@@ -32,7 +33,11 @@ const CreateClass: React.FC<Props> = (props) => {
             props.onSuccess({ ...response.data, students: [] });
           }
         })
-        .catch((error) => error);
+        .catch((error) => {
+          if (error.response.status === 409) {
+            setWarning("Já existe outra turma com este nome");
+          }
+        });
     }
   }
 
@@ -52,11 +57,14 @@ const CreateClass: React.FC<Props> = (props) => {
               placeholder="Nome da turma"
               value={name}
               onChange={setName}
+              warning={!!warning}
+              setWarning={() => setWarning("")}
             >
               <SiGoogleclassroom />
             </InputWithIcon>
             <button onClick={() => handleCreateSchoolClass()}>Criar</button>
           </div>
+          <p className="warning">{warning}</p>
         </div>
       ) : (
         <button className="expand" onClick={() => setExpanded(true)}>

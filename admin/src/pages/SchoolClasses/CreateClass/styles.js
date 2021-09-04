@@ -74,6 +74,13 @@ export const Container = styled.div`
       }
     }
 
+    .warning {
+      margin-top: 5px;
+      color: #e74c3c;
+      font-size: 14px;
+      margin: 5px 0;
+    }
+
     .row {
       button {
         height: 34px;
