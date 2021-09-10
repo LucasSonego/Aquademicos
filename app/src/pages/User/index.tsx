@@ -44,7 +44,7 @@ const User = () => {
   }
 
   return (
-    <Page>
+    <Page className="app-safe-area">
       <Container>
         <div className="user-data section">
           <h3 className="section-label">Aluno</h3>
