@@ -119,6 +119,7 @@ class ClassLessonController {
               school_class_id: true,
               public_at: true,
             },
+            orderBy: { public_at: "asc" },
           }),
         ]);
 
