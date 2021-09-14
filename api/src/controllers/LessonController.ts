@@ -8,7 +8,7 @@ class LessonController {
     const schema = yup.object().shape({
       title: yup.string().required(),
       description: yup.string().required(),
-      textContent: yup.string().required(),
+      textContent: yup.string(),
       videoUrl: yup.string().url().required(),
     });
 
@@ -22,7 +22,7 @@ class LessonController {
       data: {
         title: req.body.title,
         description: req.body.description,
-        text_content: req.body.textContent,
+        text_content: req.body.textContent || null,
         video_url: req.body.videoUrl,
       },
     });

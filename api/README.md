@@ -642,7 +642,7 @@ Rota: /school_classes
 | ----------- | ------------ | ---------- | ----------- |
 | title       | String       | -          | sim         |
 | description | String       | -          | sim         |
-| textContent | String       | -          | sim         |
+| textContent | String       | -          | não         |
 | videoUrl    | String       | URL        | sim         |
 
 **Requisição:**
