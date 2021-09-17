@@ -11,7 +11,7 @@ export const Container = styled.div`
     padding: 0;
   }
 
-  .warning {
+  .big-warning {
     color: #999;
     font-weight: 500;
     font-family: inherit;
