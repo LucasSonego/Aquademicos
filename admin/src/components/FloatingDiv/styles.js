@@ -13,7 +13,6 @@ export const Container = styled.div`
   }
 
   @media (max-width: 750px) {
-    width: 100%;
     height: fit-content;
     max-height: 100%;
     max-width: 100%;
@@ -100,12 +99,11 @@ export const BackDrop = styled.div`
       ? css`
           z-index: 99
           display: flex;
-          position: absolute;
+          position: fixed;
           top: 0;
           left: 0;
-          display: flex;
-          height: 100vh;
-          width: 100vw;
+          right: 0;
+          bottom: 0;
           background-color: #3332;
         `
       : css`
