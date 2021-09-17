@@ -52,7 +52,11 @@ const Content: React.FC = () => {
             {schoolClassContent && schoolClassContent.length > 0 ? (
               <ul>
                 {schoolClassContent.map((lesson: ISchoolClassLesson) => (
-                  <SchoolClassLesson data={lesson} key={lesson.id} />
+                  <SchoolClassLesson
+                    data={lesson}
+                    key={lesson.id}
+                    updateContent={updateContent}
+                  />
                 ))}
               </ul>
             ) : (

@@ -12,6 +12,7 @@ export const Container = styled.li`
     width: 100%;
     max-width: 150px;
     padding: 20px;
+    cursor: pointer;
 
     display: flex;
     flex-direction: column;
