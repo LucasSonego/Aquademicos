@@ -59,7 +59,7 @@ const LessonFields: React.FC<Props> = (props) => {
           <div className="md-wrapper">
             <Markdown
               key={props.editorKey || 1}
-              defaultValue=""
+              defaultValue={props.content || ""}
               onChange={(value: string) => props.setContent(value)}
             />
           </div>
@@ -93,7 +93,7 @@ const LessonFields: React.FC<Props> = (props) => {
             <div className="date-picker-wrapper">
               <span className="label public-at-label">Disponivel em:</span>
               <span className="grey-warning">
-                Aviso: A ordem de exibição das atividades é baseada nesta data.
+                Aviso: A ordem de exibição das aulas é baseada nesta data.
               </span>
               <DatePicker onChange={props.setPublicAt} />
             </div>

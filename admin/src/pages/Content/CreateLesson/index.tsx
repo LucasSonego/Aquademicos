@@ -26,8 +26,6 @@ const CreateLesson: React.FC<Props> = (props) => {
   const [editorKey, setEditorKey] = useState(1);
 
   async function handleCreateLesson() {
-    console.log(publicAt);
-
     if (!title) {
       setWarning('Preencha o campo "Titulo"');
       return;
