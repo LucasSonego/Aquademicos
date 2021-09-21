@@ -119,33 +119,35 @@ const CreateLesson: React.FC<Props> = (props) => {
         visible={showModal}
         setVisible={setShowModal}
       >
-        <LessonFields
-          title={title}
-          setTitle={setTitle}
-          description={description}
-          setDescription={setDescription}
-          content={content}
-          setContent={setContent}
-          editorKey={editorKey}
-          videoUrl={videoUrl}
-          setVideoUrl={setVideoUrl}
-          publicAt={publicAt}
-          setPublicAt={setPublicAt}
-        />
-        <p className="warning">{warning}</p>
-        <button
-          className="create-lesson-btn"
-          disabled={isLoading}
-          onClick={handleCreateLesson}
-        >
-          {!isLoading ? (
-            "Criar Aula"
-          ) : (
-            <>
-              Criando aula <Loading />
-            </>
-          )}
-        </button>
+        <div className="floating-div-content">
+          <LessonFields
+            title={title}
+            setTitle={setTitle}
+            description={description}
+            setDescription={setDescription}
+            content={content}
+            setContent={setContent}
+            editorKey={editorKey}
+            videoUrl={videoUrl}
+            setVideoUrl={setVideoUrl}
+            publicAt={publicAt}
+            setPublicAt={setPublicAt}
+          />
+          <p className="warning">{warning}</p>
+          <button
+            className="create-lesson-btn"
+            disabled={isLoading}
+            onClick={handleCreateLesson}
+          >
+            {!isLoading ? (
+              "Criar Aula"
+            ) : (
+              <>
+                Criando aula <Loading />
+              </>
+            )}
+          </button>
+        </div>
       </FloatingDiv>
     </Container>
   );

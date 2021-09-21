@@ -1,6 +1,12 @@
 import styled from "styled-components";
 
 export const Container = styled.div`
+  @media (max-width: 750px) {
+    .floating-div-content {
+      width: 85vw;
+    }
+  }
+
   .button {
     margin-top: 15px;
     box-sizing: border-box;
