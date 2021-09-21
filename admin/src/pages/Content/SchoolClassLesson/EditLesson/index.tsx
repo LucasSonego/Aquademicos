@@ -1,11 +1,12 @@
 import React, { useState } from "react";
+
 import FloatingDiv from "../../../../components/FloatingDiv";
 import showNotification from "../../../../components/Notification";
 import api from "../../../../services/api";
 import { ISchoolClassLesson } from "../../interfaces";
 import LessonFields from "../../LessonFields";
-
-import { Container } from "./styles";
+import DeletionOptions from "./DeletionOptions";
+import { Container, FlexibleDiv } from "./styles";
 
 interface Props {
   data: ISchoolClassLesson;
@@ -14,12 +15,14 @@ interface Props {
   onSuccess: () => void;
 }
 
-const EditLesson: React.FC<Props> = (props) => {
+const LessonDetails: React.FC<Props> = (props) => {
   const lesson = props.data.lesson;
   const [title, setTitle] = useState(lesson.title);
   const [description, setDescription] = useState(lesson.description);
   const [content, setContent] = useState(lesson.text_content);
   const [videoUrl, setVideoUrl] = useState(lesson.video_url);
+
+  const [showDeletionOptions, setShowDeletionOptions] = useState(false);
 
   async function updateLesson() {
     let data: any = {};
@@ -39,38 +42,55 @@ const EditLesson: React.FC<Props> = (props) => {
     });
   }
 
+  function onDelete() {
+    props.setVisible(false);
+    props.onSuccess();
+  }
+
   return (
     <Container>
       {props.visible ? (
         <FloatingDiv
           visible={props.visible}
           setVisible={props.setVisible}
-          title="Editar aula"
+          title="Detalhes da aula"
         >
-          <LessonFields
-            title={title}
-            setTitle={setTitle}
-            description={description}
-            setDescription={setDescription}
-            content={content}
-            setContent={setContent}
-            videoUrl={videoUrl}
-            setVideoUrl={setVideoUrl}
-          />
-          <button
-            className="submit"
-            disabled={
-              !title ||
-              !description ||
-              !videoUrl ||
-              (title === lesson.title &&
-                description === lesson.description &&
-                videoUrl === lesson.video_url)
-            }
-            onClick={() => updateLesson()}
-          >
-            Atualizar dados
-          </button>
+          <div className="floating-div-content">
+            <FlexibleDiv expanded={showDeletionOptions}>
+              <h3>Conteúdo:</h3>
+              <DeletionOptions
+                lessonId={props.data.lesson.id}
+                schoolClassId={props.data.school_class_id}
+                expanded={showDeletionOptions}
+                setExpanded={setShowDeletionOptions}
+                onDelete={onDelete}
+              />
+            </FlexibleDiv>
+            <LessonFields
+              title={title}
+              setTitle={setTitle}
+              description={description}
+              setDescription={setDescription}
+              content={content}
+              setContent={setContent}
+              videoUrl={videoUrl}
+              setVideoUrl={setVideoUrl}
+            />
+            <button
+              className="submit"
+              disabled={
+                !title ||
+                !description ||
+                !videoUrl ||
+                (title === lesson.title &&
+                  description === lesson.description &&
+                  videoUrl === lesson.video_url)
+              }
+              onClick={() => updateLesson()}
+            >
+              Atualizar dados
+            </button>
+          </div>
         </FloatingDiv>
       ) : (
         <></>
@@ -79,4 +99,4 @@ const EditLesson: React.FC<Props> = (props) => {
   );
 };
 
-export default EditLesson;
+export default LessonDetails;
