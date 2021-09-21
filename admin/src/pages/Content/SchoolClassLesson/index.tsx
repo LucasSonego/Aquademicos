@@ -12,7 +12,7 @@ interface Props {
 
 const Lesson: React.FC<Props> = ({ data, updateContent }) => {
   const [editDateVisible, setEditDateVisible] = useState(false);
-  const [editLessonVisible, setEditLessonVisible] = useState(false);
+  const [lessonDetailsVisible, setLessonDetailsVisible] = useState(false);
 
   return (
     <Container>
@@ -34,12 +34,12 @@ const Lesson: React.FC<Props> = ({ data, updateContent }) => {
         onSuccess={updateContent}
       />
       <EditLesson
-        visible={editLessonVisible}
-        setVisible={setEditLessonVisible}
+        visible={lessonDetailsVisible}
+        setVisible={setLessonDetailsVisible}
         data={data}
         onSuccess={updateContent}
       />
-      <div className="text" onClick={() => setEditLessonVisible(true)}>
+      <div className="text" onClick={() => setLessonDetailsVisible(true)}>
         <h3>{data.lesson.title}</h3>
         <p>{data.lesson.description}</p>
       </div>

@@ -1,7 +1,10 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 export const Container = styled.div`
-  .warning {
+  @media (max-width: 750px) {
+    .floating-div-content {
+      width: 85vw;
+    }
   }
 
   .submit {
@@ -22,4 +25,27 @@ export const Container = styled.div`
       cursor: default;
     }
   }
+`;
+
+export const FlexibleDiv = styled.div`
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  h3 {
+    margin: 0;
+    color: #777;
+  }
+
+  ${(props) =>
+    props.expanded &&
+    css`
+      flex-direction: column-reverse;
+      align-items: start;
+
+      h3 {
+        margin-top: 10px;
+      }
+    `}
 `;
