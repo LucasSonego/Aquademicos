@@ -41,6 +41,7 @@ export const Container = styled.li`
   .text {
     padding: 20px;
     width: 100%;
+    cursor: pointer;
 
     h3 {
       margin: 0 0 5px 0;

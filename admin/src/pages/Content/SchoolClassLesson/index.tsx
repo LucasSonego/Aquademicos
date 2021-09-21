@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { ISchoolClassLesson } from "../interfaces";
 import EditDate from "./EditDate";
+import EditLesson from "./EditLesson";
 
 import { Container } from "./styles";
 
@@ -11,6 +12,7 @@ interface Props {
 
 const Lesson: React.FC<Props> = ({ data, updateContent }) => {
   const [editDateVisible, setEditDateVisible] = useState(false);
+  const [editLessonVisible, setEditLessonVisible] = useState(false);
 
   return (
     <Container>
@@ -31,7 +33,13 @@ const Lesson: React.FC<Props> = ({ data, updateContent }) => {
         setVisible={setEditDateVisible}
         onSuccess={updateContent}
       />
-      <div className="text">
+      <EditLesson
+        visible={editLessonVisible}
+        setVisible={setEditLessonVisible}
+        data={data}
+        onSuccess={updateContent}
+      />
+      <div className="text" onClick={() => setEditLessonVisible(true)}>
         <h3>{data.lesson.title}</h3>
         <p>{data.lesson.description}</p>
       </div>
