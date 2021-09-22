@@ -15,7 +15,6 @@ interface Props {
   setDescription?: (value: string) => void;
   content?: string;
   setContent?: (value: string) => void;
-  editorKey?: number;
   videoUrl?: string;
   setVideoUrl?: (value: string) => void;
   publicAt?: string;
@@ -58,7 +57,6 @@ const LessonFields: React.FC<Props> = (props) => {
           </div>
           <div className="md-wrapper">
             <Markdown
-              key={props.editorKey || 1}
               defaultValue={props.content || ""}
               onChange={(value: string) => props.setContent(value)}
             />

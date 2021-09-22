@@ -82,6 +82,7 @@ const CreateLesson: React.FC<Props> = (props) => {
             setTitle("");
             setDescription("");
             setVideoUrl("");
+            setContent("");
             setEditorKey(editorKey + 1);
             setPublicAt("");
             setIsLoading(false);
@@ -127,11 +128,11 @@ const CreateLesson: React.FC<Props> = (props) => {
             setDescription={setDescription}
             content={content}
             setContent={setContent}
-            editorKey={editorKey}
             videoUrl={videoUrl}
             setVideoUrl={setVideoUrl}
             publicAt={publicAt}
             setPublicAt={setPublicAt}
+            key={editorKey}
           />
           <p className="warning">{warning}</p>
           <button
