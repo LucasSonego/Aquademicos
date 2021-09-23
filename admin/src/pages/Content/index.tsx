@@ -4,7 +4,7 @@ import SchoolClassSelector from "../../components/SchoolClassSelector";
 import useFetch from "../../hooks/useFetch";
 import api from "../../services/api";
 import { SimplifiedSchoolClassData } from "../SchoolClasses/interfaces";
-import CreateLesson from "./CreateLesson";
+import AddContent from "./AddContent";
 import { ISchoolClassLesson } from "./interfaces";
 import SchoolClassLesson from "./SchoolClassLesson";
 import { Page, Container } from "./styles";
@@ -45,8 +45,15 @@ const Content: React.FC = () => {
         />
         {schoolClass ? (
           <>
-            <CreateLesson
+            <AddContent
               schoolClassId={schoolClass}
+              schoolClassLessons={
+                schoolClassContent
+                  ? schoolClassContent.map(
+                      (classLesson: ISchoolClassLesson) => classLesson.lesson.id
+                    )
+                  : []
+              }
               onSuccess={updateContent}
             />
             {schoolClassContent && schoolClassContent.length > 0 ? (
