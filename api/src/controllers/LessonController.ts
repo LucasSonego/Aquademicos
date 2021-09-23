@@ -76,7 +76,13 @@ class LessonController {
   async indexAll(req: Request, res: Response) {
     const lessons = await client.lesson.findMany({
       orderBy: { title: "asc" },
-      select: { id: true, title: true, description: true },
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        text_content: true,
+        video_url: true,
+      },
     });
 
     return res.json(lessons);

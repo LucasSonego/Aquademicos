@@ -1,12 +1,6 @@
 import styled from "styled-components";
 
 export const Container = styled.div`
-  @media (max-width: 750px) {
-    .floating-div-content {
-      width: 85vw;
-    }
-  }
-
   .button {
     margin-top: 15px;
     box-sizing: border-box;
@@ -43,37 +37,44 @@ export const Container = styled.div`
     }
   }
 
-  .warning {
-    margin-top: 5px;
-    color: #e74c3c;
-    font-size: 14px;
-    margin: 5px 0;
-    min-height: 22px;
+  .floating-div-content {
+    display: flex;
+    flex-direction: column;
+    width: 70vw;
+    max-width: 900px;
+    @media (max-width: 750px) {
+      width: 85vw;
+    }
   }
 
-  .create-lesson-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 500;
-    font-size: 18px;
-    outline: none;
-    border: none;
-    cursor: pointer;
-    background: #3389ff;
-    color: #fff;
-    padding: 10px;
-    border-radius: 6px;
+  .tab-selector {
     width: 100%;
+    display: flex;
+    border-radius: 15px;
+    background-color: #f6f6f6;
+    .tab {
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      border-radius: 15px;
+      padding: 5px;
+      width: 100%;
+      font-weight: 500;
+      color: #777;
 
-    svg {
-      margin-left: 15px;
-      height: 15px;
-      width: 15px;
+      svg {
+        margin-top: 1px;
+        margin-right: 5px;
+        height: 22px;
+        width: 22px;
+      }
     }
 
-    :disabled {
-      cursor: default;
+    .selected {
+      background-color: #ddebff;
+      color: #006bff;
     }
   }
 `;
