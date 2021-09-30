@@ -28,14 +28,14 @@ const Nav: React.FC = () => {
       visible={!notVisibleOn.find((route) => route === location.pathname)}
     >
       <div className="navigation">
-        <Link to="aluno">
+        <Link to="/aluno">
           <Tab selected={location.pathname === "/aluno"}>
             <AiOutlineUser />
             <span className="label">Aluno</span>
           </Tab>
         </Link>
-        <Link to="conteudo">
-          <Tab selected={location.pathname === "/conteudo"}>
+        <Link to="/conteudo">
+          <Tab selected={location.pathname.includes("/conteudo")}>
             <svg
               className="inline-svg"
               fill="none"
@@ -58,7 +58,7 @@ const Nav: React.FC = () => {
             <span className="label">Conteúdo</span>
           </Tab>
         </Link>
-        <Link to="atividades">
+        <Link to="/atividades">
           <Tab selected={location.pathname === "/atividades"}>
             <svg
               className="inline-svg"
@@ -87,7 +87,7 @@ const Nav: React.FC = () => {
             <span className="label">Atividades</span>
           </Tab>
         </Link>
-        <Link to="aquario">
+        <Link to="/aquario">
           <Tab selected={location.pathname === "/aquario"}>
             <IoFish />
             <span className="label">Aquário</span>
