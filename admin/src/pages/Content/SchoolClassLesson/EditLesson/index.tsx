@@ -84,7 +84,8 @@ const LessonDetails: React.FC<Props> = (props) => {
                 !videoUrl ||
                 (title === lesson.title &&
                   description === lesson.description &&
-                  videoUrl === lesson.video_url)
+                  videoUrl === lesson.video_url &&
+                  content === lesson.text_content)
               }
               onClick={() => updateLesson()}
             >

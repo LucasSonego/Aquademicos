@@ -47,6 +47,8 @@ export const Container = styled.div`
 
   .children-wrapper {
     overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #ccc #f5f5f5;
     @media (max-width: 750px) {
     }
 
