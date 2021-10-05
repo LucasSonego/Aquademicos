@@ -63,7 +63,7 @@ const SchoolClasses: React.FC = () => {
   }
 
   return (
-    <Page>
+    <Page className="app-safe-area">
       <Container>
         <CreateClass
           onSuccess={(newSchoolClass) =>

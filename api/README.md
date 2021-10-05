@@ -4,7 +4,9 @@
 
 - [Users](#Users)
 - [Sessions](#Sessions)
-- [School Classes](#School\ Classes)
+- [School Classes](#School-Classes)
+- [Lessons](#Lessons)
+- [Class Lessons](#Class-Lessons)
 
 ---
 
@@ -566,8 +568,6 @@ Rota: /school_classes
 
 
 
-
-
 #### Deletar
 
 **Requisição:**
@@ -628,3 +628,417 @@ Rota: /school_classes
 **Códigos de erros:**
 **404**: Não há nenhuma turma com este id
 
+---
+
+
+
+### Lessons
+
+#### Criar
+
+**Dados:**
+
+| Campo       | Tipo de dado | Requisitos | Obrigatório |
+| ----------- | ------------ | ---------- | ----------- |
+| title       | String       | -          | sim         |
+| description | String       | -          | sim         |
+| textContent | String       | -          | não         |
+| videoUrl    | String       | URL        | sim         |
+
+**Requisição:**
+
+Método: POST
+Rota: /lessons
+(Usuário deve estar autenticado e deve ser um orientador)
+
+```json
+{
+  "title": "Aula 1",
+  "description": "Esta é a aula 1",
+  "textContent": "Mussum Ipsum, cacilds vidis litro abertis. Quem manda na minha terra sou euzis!",
+  "videoUrl": "https://vimeo.com/123123123"
+}
+```
+
+**Resposta:**
+
+```json
+{
+  "id": "24f11f56-85d0-4acc-bfc7-a9f9d050b165",
+  "title": "Aula 1",
+  "description": "Esta é a aula 1",
+  "textContent": "Mussum Ipsum, cacilds vidis litro abertis. Quem manda na minha terra sou euzis!",
+  "videoUrl": "https://vimeo.com/123123123"
+}
+```
+
+---
+
+
+
+#### Listar
+
+**Requisição:**
+
+Método: GET
+Rota: /lessons
+(Usuário deve estar autenticado e deve ser um orientador)
+
+```xml
+<URL_BASE>/lesosns
+```
+
+**Respostas:**
+
+```json
+[
+  {
+    "id": "24f11f56-85d0-4acc-bfc7-a9f9d050b165",
+    "title": "Aula 1",
+    "description": "Esta é a aula 1"
+  },
+  {
+    "id": "fc6062fc-d79a-4767-8bd0-ade342d183f2",
+    "title": "Aula 2",
+    "description": "Esta é a aula 2"
+  }
+]
+```
+
+---
+
+
+
+#### Buscar
+
+**Requisição:**
+
+Método: GET
+Rota: /lessons/`id`
+(Usuário deve estar autenticado)
+
+```xml
+<URL_BASE>/lesosns/24f11f56-85d0-4acc-bfc7-a9f9d050b165
+```
+
+**Respostas:**
+
+```json
+{
+  "id": "24f11f56-85d0-4acc-bfc7-a9f9d050b165",
+  "title": "Aula 1",
+  "description": "Esta é a aula 1",
+  "text_content": "Mussum Ipsum, cacilds vidis litro abertis. Quem manda na minha terra sou euzis!",
+  "video_url": "https://vimeo.com/123123123"
+}
+
+```
+
+*Os orientadores podem ver qualquer aula, e os alunos podem ver apenas as aulas vinculadas a turma a qual ele faz parte.
+
+**Códigos de erros:**
+**404**: Não há nenhuma aula com este id
+
+---
+
+
+
+#### Editar
+
+**Dados:**
+
+| Campo       | Tipo de dado | Requisitos | Obrigatório |
+| ----------- | ------------ | ---------- | ----------- |
+| title       | String       | -          | não         |
+| description | String       | -          | não         |
+| textContent | String       | -          | não         |
+| videoUrl    | String       | URL        | não         |
+
+**Requisição:**
+
+Método: PUT
+Rota: /lessons/`id`
+(Usuário deve estar autenticado e deve ser um orientador)
+
+```xml
+<URL_BASE>/lessons/d14902e8-c4c9-4af6-aa67-6285ce6934d5
+```
+
+```json
+{
+  "title": "Aula 1",
+  "description": "Esta é a aula 1",
+  "textContent": "Mussum Ipsum, cacilds vidis litro abertis. Quem manda na minha terra sou euzis!",
+  "videoUrl": "https://vimeo.com/123123123"
+}
+```
+
+**Resposta:**
+
+```json
+{
+  "id": "24f11f56-85d0-4acc-bfc7-a9f9d050b165",
+  "title": "Aula 1",
+  "description": "Esta é a aula 1",
+  "textContent": "Mussum Ipsum, cacilds vidis litro abertis. Quem manda na minha terra sou euzis!",
+  "videoUrl": "https://vimeo.com/123123123"
+}
+```
+
+**Códigos de erros:**
+**404**: Não há nenhuma aula com este id
+
+---
+
+
+
+#### Deletar
+
+**Requisição:**
+
+Método: DELETE
+Rota: /lessons/`id` 
+(Usuário deve estar autenticado e deve ser um orientador)
+
+```xml
+<URL_BASE>/lessons/24f11f56-85d0-4acc-bfc7-a9f9d050b165
+```
+
+**Resposta:**
+
+```json
+OK (200)
+```
+
+**Códigos de erros:**
+**404**: Não há nenhuma aula com este id
+
+---
+
+
+
+### Class Lessons
+
+#### Criar
+
+**Dados:**
+
+| Campo         | Tipo de Dado | Requisitos      | Obrigatório |
+| ------------- | ------------ | --------------- | ----------- |
+| lessonId      | String       | -               | sim         |
+| schoolClassId | String       | -               | sim         |
+| publicAt      | String       | ISO date string | não         |
+
+**Requisição:**
+
+Método: POST
+Rota: /class_lessons
+(Usuário deve estar autenticado e deve ser um orientador)
+
+```json
+{
+  "lessonId": "24f11f56-85d0-4acc-bfc7-a9f9d050b165",
+  "schoolClassId": "f5cb7356-6965-429f-981c-635367ce6716",
+  "publicAt": "2021-09-09T22:45:00.000Z"
+}
+```
+
+**Resposta:**
+
+```json
+{
+  "id": "2fbe6bbe-9a48-4a48-8cf9-d316d8751177",
+  "lesson_id": "24f11f56-85d0-4acc-bfc7-a9f9d050b165",
+  "school_class_id": "f5cb7356-6965-429f-981c-635367ce6716",
+  "public_at": "2021-09-09T22:45:00.000Z"
+}
+```
+
+**Códigos de erros:**
+**404**: Não há nenhuma aula com este id
+**404**: Não há nenhuma turma com este id
+**409**: Esta aula já existe nesta turma
+
+*Caso o campo "publicAt" não seja enviado o valor de "publicAt" será a hora em que a requisição foi recebida
+
+---
+
+
+
+#### Listar
+
+**Requisição:**
+
+Método: GET
+Rota: /class_lessons
+(Usuário deve estar autenticado)
+
+```xml
+<URL_BASE>/class_lessons
+```
+
+**Resposta** (estudante): *O estudante receberá uma lista com as aulas vinculadas a turma a qual ele faz parte
+
+```json
+[
+  {
+    "id": "24f11f56-85d0-4acc-bfc7-a9f9d050b165",
+    "title": "Aula 1",
+    "description": "Esta é a aula 1"
+  },
+  {
+    "id": "fc6062fc-d79a-4767-8bd0-ade342d183f2",
+    "title": "Aula 2",
+    "public_at": "2021-10-15T00:00:00.000Z"
+  }
+]
+```
+
+**Resposta** (orientador): *O orientador receberá uma lista de turmas contendo as tarefas vinculadas a cada uma delas
+
+```json
+[ 
+  {
+    "id": "9b4b494e-5c0e-4811-85e2-be14830d42e0",
+    "name": "Turma Y",
+    "lessons": []
+  },
+  {
+    "id": "f5cb7356-6965-429f-981c-635367ce6716",
+    "name": "Turma X",
+    "lessons": [
+      {
+        "id": "24f11f56-85d0-4acc-bfc7-a9f9d050b165",
+        "title": "Aula 1",
+        "description": "Esta é a aula 1",
+        "text_content": "Mussum Ipsum, cacilds vidis litro abertis. Quem manda na minha terra sou euzis!",
+        "video_url": "https://vimeo.com/123123123"
+      },
+      {
+        "id": "fc6062fc-d79a-4767-8bd0-ade342d183f2",
+        "title": "Aula 2",
+        "description": "Esta é a aula 2",
+        "text_content": "Mussum Ipsum, cacilds vidis litro abertis. Per aumento de cachacis, eu reclamis.",
+        "video_url": "https://www.youtube.com/watch?v=example"
+      }
+    ]
+  }
+]
+```
+
+
+
+**Buscar aulas de uma turma**
+
+```xml
+<URL_BASE>/class_lessons?class="f5cb7356-6965-429f-981c-635367ce6716"
+```
+
+**Resposta:**
+
+```json
+[
+  {
+    "id": "2fbe6bbe-9a48-4a48-8cf9-d316d8751177",
+    "lesson": {
+      "id": "24f11f56-85d0-4acc-bfc7-a9f9d050b165",
+      "title": "Aula 1",
+      "description": "Esta é a aula 1",
+      "text_content": "Mussum Ipsum, cacilds vidis litro abertis. Quem manda na minha terra sou euzis!",
+      "video_url": "https://vimeo.com/123123123"
+    },
+    "school_class_id": "f5cb7356-6965-429f-981c-635367ce6716",
+    "public_at": "2021-09-10T00:00:00.000Z"
+  },
+  {
+    "id": "40530ea8-986a-46df-8c89-9c3ea1fa432c",
+    "lesson": {
+      "id": "fc6062fc-d79a-4767-8bd0-ade342d183f2",
+      "title": "Aula 2",
+      "description": "Esta é a aula 2",
+      "text_content": "Mussum Ipsum, cacilds vidis litro abertis. Per aumento de cachacis, eu reclamis.",
+      "video_url": "https://www.youtube.com/watch?v=example"
+    },
+    "school_class_id": "f5cb7356-6965-429f-981c-635367ce6716",
+    "public_at": "2021-10-15T00:00:00.000Z"
+  }
+]
+```
+
+**Códigos de erros:**
+**404**: Não há nenhuma turma com este id
+
+---
+
+
+
+#### Editar
+
+**Dados:**
+
+| Campo         | Tipo de Dado | Requisitos      | Obrigatório |
+| ------------- | ------------ | --------------- | ----------- |
+| lessonId      | String       | -               | sim         |
+| schoolClassId | String       | -               | sim         |
+| publicAt      | String       | ISO date string | não         |
+
+**Requisição:**
+
+Método: PUT
+Rota: /class_lessons
+(Usuário deve estar autenticado e deve ser um orientador)
+
+```json
+{
+  "lessonId": "24f11f56-85d0-4acc-bfc7-a9f9d050b165",
+  "schoolClassId": "f5cb7356-6965-429f-981c-635367ce6716",
+  "publicAt": "2021-09-15T00:00:00.000Z"
+}
+```
+
+**Resposta:**
+
+```json
+{
+  "id": "2fbe6bbe-9a48-4a48-8cf9-d316d8751177",
+  "lesson_id": "24f11f56-85d0-4acc-bfc7-a9f9d050b165",
+  "school_class_id": "f5cb7356-6965-429f-981c-635367ce6716",
+  "public_at": "2021-09-15T00:00:00.000Z"
+}
+```
+
+**Códigos de erros:**
+**404**: Não há nenhuma aula que corresponde com esses dados
+
+---
+
+
+
+#### Deletar
+
+**Dados:**
+
+| Campo         | Tipo de Dado | Requisitos | Obrigatório |
+| ------------- | ------------ | ---------- | ----------- |
+| lessonId      | String       | -          | sim         |
+| schoolClassId | String       | -          | sim         |
+
+Método: DELETE
+Rota: /class_lessons
+(Usuário deve estar autenticado e deve ser um orientador)
+
+```json
+{
+  "lessonId": "24f11f56-85d0-4acc-bfc7-a9f9d050b165",
+  "schoolClassId": "f5cb7356-6965-429f-981c-635367ce6716"
+}
+```
+
+**Resposta:**
+
+```json
+OK (200)
+```
+
+**Códigos de erros:**
+**404**: Não há nenhuma aula que corresponde com esses dados

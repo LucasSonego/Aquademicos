@@ -23,14 +23,37 @@ model User {
 }
 
 model SchoolClass {
-  id            String    @id @unique @default(uuid())
-  name          String    @unique
-  students      User[]    @relation("students")
-  created_at    DateTime  @default(now())
-  updated_at    DateTime  @updatedAt
+  id            String              @id @unique @default(uuid())
+  name          String              @unique
+  students      User[]              @relation("students")
+  lessons       SchoolClassLesson[] @relation("school_class_lessons")
+  created_at    DateTime            @default(now())
+  updated_at    DateTime            @updatedAt
   deleted_at    DateTime?
   deleted_by_id String?
-  deleted_by    User?     @relation(fields: [deleted_by_id], references: [id])
+  deleted_by    User?               @relation(fields: [deleted_by_id], references: [id])
 
   @@map("school_classes")
+}
+
+model Lesson {
+  id           String              @id @unique @default(uuid())
+  title        String
+  description  String
+  text_content String?
+  video_url    String
+  used_on      SchoolClassLesson[] @relation("lesson")
+
+  @@map("lessons")
+}
+
+model SchoolClassLesson {
+  id              String      @id @unique @default(uuid())
+  lesson_id       String
+  lesson          Lesson      @relation("lesson", fields: [lesson_id], references: [id])
+  school_class_id String
+  school_class    SchoolClass @relation("school_class_lessons", fields: [school_class_id], references: [id])
+  public_at       DateTime
+
+  @@map("class_lessons")
 }

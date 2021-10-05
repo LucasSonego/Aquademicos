@@ -17,7 +17,7 @@ export const Container = styled.div`
     }
 
     @media (max-width: 750px) {
-      padding: 20px;
+      padding: 20px 10px;
     }
   }
 
@@ -197,15 +197,7 @@ export const Container = styled.div`
 `;
 
 export const Page = styled.div`
-  box-sizing: border-box;
-  min-height: 100vh;
-
   @media (min-width: 751px) {
     background: linear-gradient(120deg, #006bff, #0059d4);
-    padding: 10px 20px 10px 105px;
-  }
-
-  @media (max-width: 750px) {
-    padding-bottom: 95px;
   }
 `;
