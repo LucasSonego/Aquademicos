@@ -42,7 +42,7 @@ const Nav: React.FC = () => {
           </Tab>
         </Link>
         <Link to="conteudo">
-          <Tab selected={location.pathname === "/conteudo"}>
+          <Tab selected={location.pathname.includes("conteudo")}>
             <svg
               className="inline-svg"
               fill="none"

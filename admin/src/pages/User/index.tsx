@@ -4,7 +4,7 @@ import { useHistory } from "react-router-dom";
 
 import useFetch from "../../hooks/useFetch";
 import api from "../../services/api";
-import { Container, Page } from "./styles";
+import { Page, Container } from "./styles";
 import UpdatePassword from "./UpdatePassword";
 import UpdateUserData from "./UpdateUserData";
 
@@ -40,7 +40,7 @@ const User = () => {
   }
 
   return (
-    <Page>
+    <Page className="app-safe-area">
       <Container>
         <div className="user-data section">
           <h3 className="section-label">Orientador</h3>
