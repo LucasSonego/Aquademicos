@@ -92,7 +92,7 @@ class LessonController {
     const schema = yup.object().shape({
       title: yup.string(),
       description: yup.string(),
-      textContent: yup.string(),
+      textContent: yup.string().nullable(),
       videoUrl: yup.string().url(),
     });
 
@@ -117,7 +117,7 @@ class LessonController {
     if (req.body.description) {
       data = { ...data, description: req.body.description };
     }
-    if (req.body.textContent) {
+    if (req.body.textContent !== undefined) {
       data = { ...data, text_content: req.body.textContent };
     }
     if (req.body.videoUrl) {

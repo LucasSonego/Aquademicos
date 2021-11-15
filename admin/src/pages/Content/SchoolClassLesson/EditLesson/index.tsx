@@ -29,7 +29,7 @@ const LessonDetails: React.FC<Props> = (props) => {
     if (title !== lesson.title) data = { ...data, title };
     if (description !== lesson.description) data = { ...data, description };
     if (content !== lesson.text_content)
-      data = { ...data, textContent: content };
+      data = { ...data, textContent: content || null };
     if (videoUrl !== lesson.video_url) data = { ...data, videoUrl };
 
     await api.put(`/lessons/${lesson.id}`, { ...data }).then(() => {
