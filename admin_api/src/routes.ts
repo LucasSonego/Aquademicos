@@ -34,9 +34,23 @@ routes.delete("/sessions", SessionController.delete);
 
 routes.get("/users", UserController.index);
 routes.put("/users", UserController.update);
+routes.put("/students", UserController.adminUpdate);
 
+routes.post("/school_classes", SchoolClassController.store);
+routes.get("/school_classes", SchoolClassController.index);
+routes.put("/school_classes/:id", SchoolClassController.update);
+routes.delete("/school_classes/:id", SchoolClassController.delete);
+routes.patch("/school_classes/:id", SchoolClassController.restore);
+
+routes.post("/lessons", LessonController.store);
 routes.get("/lessons/:id", LessonController.index);
+routes.get("/lessons", LessonController.indexAll);
+routes.put("/lessons/:id", LessonController.update);
+routes.delete("/lessons/:id", LessonController.delete);
 
+routes.post("/class_lessons", ClassLessonController.store);
 routes.get("/class_lessons", ClassLessonController.index);
+routes.put("/class_lessons", ClassLessonController.update);
+routes.delete("/class_lessons", ClassLessonController.delete);
 
 export default routes;

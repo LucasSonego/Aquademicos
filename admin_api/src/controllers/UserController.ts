@@ -11,14 +11,20 @@ class UserController {
       name: yup.string().required(),
       email: yup.string().required().email(),
       password: yup.string().required().min(6),
-      school_class_id: yup.string().required(),
+      admin_secret: yup.string().required(),
     });
 
     if (!(await schema.isValid(req.body))) {
-      console.log(req.body);
       return res.status(400).json({
-        error: "Um ou mais campos não foram preenchidos corretamenteee",
+        error: "Um ou mais campos não foram preenchidos corretamente",
       });
+    }
+
+    if (
+      req.body.is_admin === true &&
+      req.body.admin_secret !== process.env.ADMIN_SECRET
+    ) {
+      return res.status(401).json("Chave de cadastro de orientador incorreta");
     }
 
     const emailAlreadyUsed = await client.user.findFirst({
@@ -34,45 +40,71 @@ class UserController {
     let password_hash = await bcrypt.hash(req.body.password, 8);
 
     try {
-      const schoolClass = await client.schoolClass.findFirst({
-        where: { id: req.body.school_class_id, deleted_at: null },
-      });
-
-      if (!schoolClass) {
-        return res
-          .status(404)
-          .json({ error: "Não existe nenhuma turma com este id" });
-      }
-
       const response = await client.user.create({
         data: {
           name: req.body.name,
           email: req.body.email,
           password_hash,
-          school_class_id: req.body.school_class_id,
+          is_admin: true,
         },
         select: {
           id: true,
           name: true,
           email: true,
-          school_class: { select: { id: true, name: true } },
+          is_admin: true,
           created_at: true,
         },
       });
       return res.json(response);
-    } catch (error) {
-      console.log(error);
+    } catch {
       return res.sendStatus(500);
     }
   }
 
   async index(req: AuthenticatedRequest, res: Response) {
+    if (req.query.id) {
+      let user = await client.user.findFirst({
+        where: { id: `${req.query.id}` },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          is_admin: true,
+          school_class: { select: { id: true, name: true } },
+          created_at: true,
+        },
+      });
+
+      if (user) {
+        return res.json(user);
+      } else
+        return res
+          .status(404)
+          .json({ error: "Não existe nenhum usuário com o id buscado" });
+    }
+
+    if (req.query.all) {
+      let response = await client.user.findMany({
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          is_admin: true,
+          school_class: { select: { id: true, name: true } },
+          created_at: true,
+        },
+      });
+
+      return res.json(response);
+    }
+
     let userData = await client.user.findFirst({
       where: { id: req.userId },
       select: {
         id: true,
         email: true,
         name: true,
+        is_admin: true,
         school_class: {
           select: {
             id: true,
@@ -152,6 +184,95 @@ class UserController {
     if (!response) {
       return res.sendStatus(500);
     }
+
+    return res.json(response);
+  }
+
+  async adminUpdate(req: AuthenticatedRequest, res: Response) {
+    const schema = yup.object().shape({
+      id: yup.string().required(),
+      name: yup.string(),
+      email: yup.string().email(),
+      password: yup.string().min(6),
+      school_class_id: yup.string(),
+    });
+
+    if (!(await schema.isValid(req.body))) {
+      return res.status(400).json({
+        error: "Um ou mais campos não foram preenchidos corretamente",
+      });
+    }
+
+    const user = await client.user.findUnique({
+      where: { id: req.body.id },
+    });
+
+    if (!user) {
+      return res
+        .status(404)
+        .json({ error: "Não há nenhum usuário com este id" });
+    }
+
+    if (user.is_admin === true) {
+      return res.status(403).json({
+        error: "Não é permitido alterar dados de outros orientadores",
+      });
+    }
+
+    let updates = {};
+
+    if (req.body.name) {
+      updates = { ...updates, name: req.body.name };
+    }
+
+    if (req.body.email && req.body.email !== user.email) {
+      const emailAlreadyUsed = await client.user.findUnique({
+        where: { email: req.body.email },
+      });
+      if (emailAlreadyUsed) {
+        return res.status(409).json({
+          error: "Este email já esta cadastrado para outro usuário",
+        });
+      }
+      updates = { ...updates, email: req.body.email };
+    }
+
+    if (req.body.school_class_id) {
+      const schoolClass = await client.schoolClass.findFirst({
+        where: { id: req.body.school_class_id, deleted_at: null },
+      });
+
+      if (!schoolClass) {
+        return res
+          .status(404)
+          .json({ error: "Não existe nenhuma turma com este id" });
+      }
+
+      updates = {
+        ...updates,
+        school_class_id: req.body.school_class_id,
+      };
+    }
+
+    if (req.body.password) {
+      let password_hash = await bcrypt.hash(req.body.password, 8);
+      updates = { ...updates, password_hash };
+    }
+
+    const response = await client.user.update({
+      where: { id: req.body.id },
+      data: {
+        ...updates,
+      },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        school_class: { select: { id: true, name: true } },
+        created_at: true,
+        updated_at: true,
+      },
+    });
 
     return res.json(response);
   }
