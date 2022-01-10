@@ -31,14 +31,9 @@ class SessionController {
       },
     });
 
-    if (!user) {
-      return res.status(401).json({
-        error: "Usuário ou senha inválidos",
-      });
-    }
-
     let passwordsCheck = await bcrypt.compare(password, user.password_hash);
-    if (!user || !passwordsCheck) {
+
+    if (!user || user.is_admin || !passwordsCheck) {
       return res.status(401).json({
         error: "Usuário ou senha inválidos",
       });
@@ -53,12 +48,8 @@ class SessionController {
       id,
       name,
       email,
+      school_class: user.school_class,
     };
-    if (!user.is_admin) {
-      response = { ...response, school_class: user.school_class };
-    } else {
-      response = { ...response, is_admin: true };
-    }
 
     return res
       .cookie("token", token, {
@@ -84,8 +75,6 @@ class SessionController {
         id: true,
         email: true,
         name: true,
-        is_admin: true,
-        password_hash: true,
         school_class: { select: { id: true, name: true } },
       },
     });
@@ -108,11 +97,7 @@ class SessionController {
       email: user.email,
       name: user.name,
     };
-    if (user.is_admin) {
-      response = { ...response, is_admin: true };
-    } else {
-      response = { ...response, school_class: user.school_class };
-    }
+    response = { ...response, school_class: user.school_class };
 
     return res
       .cookie("token", token, {

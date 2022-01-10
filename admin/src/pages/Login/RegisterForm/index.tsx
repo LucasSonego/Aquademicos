@@ -59,7 +59,6 @@ const RegisterForm: React.FC = () => {
         name,
         email,
         password,
-        is_admin: true,
         admin_secret: adminSecret,
       })
       .then(async () => {

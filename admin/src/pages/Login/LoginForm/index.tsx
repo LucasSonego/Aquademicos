@@ -43,15 +43,7 @@ const LoginForm: React.FC = () => {
       })
       .then(async (response: Response) => {
         if (response?.status === 200) {
-          if (response?.data?.is_admin) {
-            history.push("/dados");
-          } else {
-            setWarning("Esta conta não tem permissões de orientador");
-            setInputsWarning(true);
-            await api.delete("/sessions").catch(() => {
-              document.cookie = `authenticated=true;expires=${new Date()}`;
-            });
-          }
+          history.push("/dados");
         }
       })
       .catch((err) => {

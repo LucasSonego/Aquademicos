@@ -27,20 +27,6 @@ export default function useFetch({ path, params }) {
 
         history.push("/login");
       }
-
-      if (
-        error.response?.status === 403 &&
-        error.response?.body?.error ===
-          "Apenas os orientadores podem realizar esta ação"
-      ) {
-        await api
-          .delete("/sessions")
-          .then(() => history.push("/login"))
-          .catch(() => {
-            document.cookie = `authenticated=true;expires=${new Date()}`;
-            history.push("/login");
-          });
-      }
     }
   });
   return { data, mutate };
