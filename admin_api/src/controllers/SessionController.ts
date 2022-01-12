@@ -33,7 +33,7 @@ class SessionController {
 
     let passwordsCheck = await bcrypt.compare(password, user.password_hash);
 
-    if (!user || user.is_admin || !passwordsCheck) {
+    if (!user || !user.is_admin || !passwordsCheck) {
       return res.status(401).json({
         error: "Usuário ou senha inválidos",
       });
