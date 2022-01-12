@@ -41,7 +41,7 @@ const Student: React.FC<Props> = (props) => {
 
     if (newData !== {}) {
       await api
-        .put("/admin/users", {
+        .put("/students", {
           id: props.id,
           ...newData,
         })
@@ -74,7 +74,7 @@ const Student: React.FC<Props> = (props) => {
       return;
     }
     await api
-      .put("/admin/users", {
+      .put("/students", {
         id: props.id,
         password: newPassword,
       })
@@ -91,7 +91,7 @@ const Student: React.FC<Props> = (props) => {
   async function handleSchoolClassUpdate() {
     if (newSchoolClass !== props.schoolClassId) {
       await api
-        .put("/admin/users", {
+        .put("/students", {
           id: props.id,
           school_class_id: newSchoolClass,
         })
