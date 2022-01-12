@@ -23,7 +23,7 @@ const Content: React.FC = () => {
         {userData && (
           <h2 className="school-class">{userData.school_class.name}</h2>
         )}
-        {lessons &&
+        {lessons?.length ? (
           lessons.map((lesson: ILesson) =>
             lesson.public_at ? (
               <Lesson
@@ -45,7 +45,16 @@ const Content: React.FC = () => {
                 />
               </Link>
             )
-          )}
+          )
+        ) : (
+          <div className="no-content">
+            <p>O professor ainda não publicou nenhuma aula.</p>
+            <span>
+              As aulas serão exibidas nesta página quando o professor
+              publica-las
+            </span>
+          </div>
+        )}
       </Container>
     </Page>
   );
