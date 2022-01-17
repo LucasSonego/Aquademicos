@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
 import SchoolClassSelector from "../../components/SchoolClassSelector";
 
-import useFetch from "../../hooks/useFetch";
 import api from "../../services/api";
-import { SimplifiedSchoolClassData } from "../SchoolClasses/interfaces";
 import AddContent from "./AddContent";
 import { ISchoolClassLesson } from "./interfaces";
 import SchoolClassLesson from "./SchoolClassLesson";
@@ -14,12 +12,6 @@ const Content: React.FC = () => {
   const [schoolClassContent, setSchoolClassContent] = useState<
     ISchoolClassLesson[] | []
   >();
-
-  const { data: schoolClassesList }: { data: SimplifiedSchoolClassData[] } =
-    useFetch({
-      path: "/school_classes_public",
-      params: {},
-    });
 
   function updateContent() {
     api
@@ -41,9 +33,8 @@ const Content: React.FC = () => {
         <SchoolClassSelector
           value={schoolClass}
           onChange={(newValue: string) => setSchoolClass(newValue)}
-          data={schoolClassesList}
         />
-        {schoolClass ? (
+        {schoolClass && (
           <>
             <AddContent
               schoolClassId={schoolClass}
@@ -72,10 +63,6 @@ const Content: React.FC = () => {
               </h3>
             )}
           </>
-        ) : (
-          <h3 className="big-warning">
-            Selecione a turma que você deseja ver/adicionar/editar o conteúdo
-          </h3>
         )}
       </Container>
     </Page>
