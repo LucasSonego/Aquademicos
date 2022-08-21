@@ -27,6 +27,7 @@ model SchoolClass {
   name          String              @unique
   students      User[]              @relation("students")
   lessons       SchoolClassLesson[] @relation("school_class_lessons")
+  homeworks     Homework[]          @relation("school_class_homework")
   created_at    DateTime            @default(now())
   updated_at    DateTime            @updatedAt
   deleted_at    DateTime?
@@ -56,4 +57,38 @@ model SchoolClassLesson {
   public_at       DateTime
 
   @@map("class_lessons")
+}
+
+model Homework {
+  id              String      @id @unique @default(uuid())
+  title           String
+  school_class_id String
+  school_class    SchoolClass @relation("school_class_homework", fields: [school_class_id], references: [id])
+  questions       Question[]  @relation("homework_question")
+  public_at       DateTime
+  deadline        DateTime?
+
+  @@map("homeworks")
+}
+
+model Question {
+  id          String         @id @unique @default(uuid())
+  points      Int
+  description String
+  type        String
+  homework_id String
+  homework    Homework       @relation("homework_question", fields: [homework_id], references: [id])
+  answers     AnswerOption[] @relation("answer_question")
+
+  @@map("questions")
+}
+
+model AnswerOption {
+  id          String   @id @unique @default(uuid())
+  text        String
+  selected    Boolean
+  question_id String
+  question    Question @relation("answer_question", fields: [question_id], references: [id])
+
+  @@map("answer_options")
 }

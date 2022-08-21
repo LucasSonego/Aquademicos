@@ -7,6 +7,7 @@ import SessionController from "./controllers/SessionController";
 import SchoolClassController from "./controllers/SchoolClassController";
 import LessonController from "./controllers/LessonController";
 import ClassLessonController from "./controllers/ClassLessonController";
+import HomeworkController from "./controllers/HomeworkController";
 
 const routes = Router();
 
@@ -52,5 +53,9 @@ routes.post("/class_lessons", ClassLessonController.store);
 routes.get("/class_lessons", ClassLessonController.index);
 routes.put("/class_lessons", ClassLessonController.update);
 routes.delete("/class_lessons", ClassLessonController.delete);
+
+routes.post("/homeworks/:schoolClassId", HomeworkController.store);
+routes.get("/homeworks/:id", HomeworkController.index);
+// routes.get("/homeworks/:id", HomeworkController.indexAll);
 
 export default routes;

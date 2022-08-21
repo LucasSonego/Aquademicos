@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { formatDate } from "../../../util/dateFormatter";
 import { ISchoolClassLesson } from "../interfaces";
 import EditDate from "./EditDate";
 import EditLesson from "./EditLesson";
@@ -18,11 +19,12 @@ const Lesson: React.FC<Props> = ({ data, updateContent }) => {
     <Container>
       {new Date() > new Date(data.public_at) ? (
         <div className="public" onClick={() => setEditDateVisible(true)}>
-          <h4>Disponivel</h4> <span>({formatDate(data.public_at)})</span>
+          <h4>Disponivel</h4>{" "}
+          <span>({formatDate(new Date(data.public_at))})</span>
         </div>
       ) : (
         <div className="public-at" onClick={() => setEditDateVisible(true)}>
-          Disponivel em {formatDate(data.public_at)}
+          Disponivel em {formatDate(new Date(data.public_at))}
         </div>
       )}
       <EditDate
@@ -48,19 +50,3 @@ const Lesson: React.FC<Props> = ({ data, updateContent }) => {
 };
 
 export default Lesson;
-
-function withZero(number: number) {
-  if (number < 10) {
-    return `0${number}`;
-  }
-  return `${number}`;
-}
-
-function formatDate(date: string) {
-  let dateTime = new Date(date);
-  let day = withZero(dateTime.getDate());
-  let month = withZero(dateTime.getMonth() + 1);
-  let year = dateTime.getFullYear();
-
-  return `${day}/${month}/${year}`;
-}
