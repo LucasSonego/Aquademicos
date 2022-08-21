@@ -8,6 +8,7 @@ import Login from "./pages/Login";
 import User from "./pages/User";
 import SchoolClasses from "./pages/SchoolClasses";
 import Content from "./pages/Content";
+import Homeworks from "./pages/Homeworks";
 import Homework from "./pages/Homework";
 
 const Routes: React.FC = () => {
@@ -20,7 +21,8 @@ const Routes: React.FC = () => {
         <PrivateRoute path="/dados" component={User} />
         <PrivateRoute path="/turmas" component={SchoolClasses} />
         <PrivateRoute path="/conteudo" component={Content} />
-        <PrivateRoute path="/atividades" component={Homework} />
+        <PrivateRoute exact path="/atividades" component={Homeworks} />
+        <PrivateRoute path="/atividades/:turma/:id" component={Homework} />
       </Switch>
     </BrowserRouter>
   );

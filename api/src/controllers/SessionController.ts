@@ -31,7 +31,12 @@ class SessionController {
       },
     });
 
-    let passwordsCheck = await bcrypt.compare(password, user.password_hash);
+    let passwordsCheck: boolean;
+    if (user) {
+      passwordsCheck = await bcrypt.compare(password, user.password_hash);
+    } else {
+      passwordsCheck = false;
+    }
 
     if (!user || user.is_admin || !passwordsCheck) {
       return res.status(401).json({

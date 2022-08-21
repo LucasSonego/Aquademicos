@@ -7,6 +7,7 @@ export const Container = styled.div`
   flex-direction: column;
   border-radius: 10px;
   box-shadow: 0px 0px 20px 1px #3338;
+  position: fixed;
 
   @media (min-width: 751px) {
     padding: 20px;
@@ -99,7 +100,7 @@ export const BackDrop = styled.div`
   ${(props) =>
     props.visible
       ? css`
-          z-index: 99
+          z-index: 99;
           display: flex;
           position: fixed;
           top: 0;
