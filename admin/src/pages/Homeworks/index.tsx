@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { ImPlus } from "react-icons/im";
+import { Link } from "react-router-dom";
 
 import SchoolClassSelector from "../../components/SchoolClassSelector";
 import api from "../../services/api";
@@ -40,6 +42,15 @@ const Homeworks: React.FC = () => {
           homeworks.map((homework) => (
             <HomeworkListItem key={homework.id} data={homework} />
           ))}
+        {schoolClass && (
+          <Link
+            to={`/atividades/${schoolClass}/criar`}
+            className="new-homework"
+          >
+            <ImPlus />
+            Criar nova atividade
+          </Link>
+        )}
       </Container>
     </Page>
   );
