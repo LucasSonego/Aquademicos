@@ -12,6 +12,7 @@ import FloatingDateSelector from "../../components/FloatingDateSelector";
 import { formatDate } from "../../util/dateFormatter";
 import api from "../../services/api";
 import { AxiosResponse } from "axios";
+import showNotification from "../../components/Notification";
 
 interface IHomework {
   title: string;
@@ -42,7 +43,18 @@ const Homework: React.FC = () => {
       getData()
         .then((response: AxiosResponse) => {
           console.log(response.data);
-          setHomework({ ...response.data });
+          let sortedQuestions = [];
+          if (response.data.questions) {
+            sortedQuestions = [...response.data.questions];
+            sortedQuestions = sortedQuestions.sort(
+              (a, b) => a.position - b.position
+            );
+          }
+          setHomework({
+            ...response.data,
+            publicOn: response.data.public_at,
+            questions: sortedQuestions,
+          });
         })
         .catch(() => history.push("/atividades"));
     }
@@ -102,18 +114,28 @@ const Homework: React.FC = () => {
   }
 
   function handleSave() {
-    console.log(homework);
     if (id === "criar") {
       api
         .post(`/homeworks/${turma}`, { ...homework })
         .then((response: AxiosResponse) => {
           console.log(response);
-          // if (response.status === 200) {
-          //   history.push(`/atividades/${response.data.id}`);
-          // }
+          if (response.status === 200) {
+            showNotification({ type: "default", title: "Questionário salvo" });
+            history.push(`/atividades/${turma}/${response.data.id}`);
+          }
         })
         .catch((response: AxiosResponse) => console.log(response.data));
     } else {
+      api
+        .put(`/homeworks/${id}`, { ...homework })
+        .then((response: AxiosResponse) => {
+          console.log(response);
+          if (response.status === 200) {
+            showNotification({ type: "default", title: "Questionário salvo" });
+            history.push(`/atividades/${turma}/${response.data.id}`);
+          }
+        })
+        .catch((response: AxiosResponse) => console.log(response.data));
     }
   }
 
@@ -132,7 +154,7 @@ const Homework: React.FC = () => {
               }
             />
 
-            {/* {homework.questions &&
+            {homework.questions &&
               homework.questions.map((question, index) => (
                 <div className="question" key={question.id}>
                   <div className="controls">
@@ -165,7 +187,7 @@ const Homework: React.FC = () => {
                     }
                   />
                 </div>
-              ))} */}
+              ))}
 
             <button
               className="add-question"

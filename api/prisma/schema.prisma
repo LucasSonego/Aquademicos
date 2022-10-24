@@ -76,6 +76,7 @@ model Question {
   points      Int
   description String
   type        String
+  position    Int
   homework_id String
   homework    Homework       @relation("homework_question", fields: [homework_id], references: [id])
   answers     AnswerOption[] @relation("answer_question")

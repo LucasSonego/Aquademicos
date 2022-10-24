@@ -19,12 +19,12 @@ const Lesson: React.FC<Props> = ({ data, updateContent }) => {
     <Container>
       {new Date() > new Date(data.public_at) ? (
         <div className="public" onClick={() => setEditDateVisible(true)}>
-          <h4>Disponivel</h4>{" "}
+          <h4>Disponível</h4>{" "}
           <span>({formatDate(new Date(data.public_at))})</span>
         </div>
       ) : (
         <div className="public-at" onClick={() => setEditDateVisible(true)}>
-          Disponivel em {formatDate(new Date(data.public_at))}
+          Disponível em {formatDate(new Date(data.public_at))}
         </div>
       )}
       <EditDate
