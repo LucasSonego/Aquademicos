@@ -4,34 +4,59 @@ import * as yup from "yup";
 
 class HomeworkController {
   async store(req: Request, res: Response) {
-    // Corrigir validação de schema!!!
-
-    const schemaObj = yup.object().shape({
-      id: yup.string(),
-      title: yup.string().required(),
-      questions: yup
-        .array()
-        .of(
-          yup.object().shape({
-            description: yup.string().required(),
-            type: yup.string().required(),
-            answerOptions: yup
-              .array()
-              .of(
-                yup.object().shape({
-                  text: yup.string().required(),
-                  selected: yup.boolean().required(),
-                })
-              )
-              .required(),
-          })
-        )
-        .required(),
-      publicOn: yup.date(),
-      deadline: yup.date(),
+    const homeworkSchema = yup.object().shape({
+      id: yup.string().strict(),
+      title: yup.string().strict().required(),
+      questions: yup.array().min(1).strict().required(),
+      publicOn: yup.string().strict(),
+      deadline: yup.string().strict(),
     });
 
-    if (!(await schemaObj.isValid(req.body))) {
+    if (!(await homeworkSchema.isValid(req.body))) {
+      return res.status(400).json({
+        error: "Um ou mais campos não foram preenchidos corretamente",
+      });
+    }
+
+    const questionSchema = yup.object().shape({
+      description: yup.string().strict().required(),
+      type: yup
+        .string()
+        .strict()
+        .matches(/single|multi/)
+        .required(),
+      answerOptions: yup.array().min(1).strict().required(),
+      points: yup.number().strict(),
+    });
+
+    const answerOptionSchema = yup.object().shape({
+      text: yup.string().strict().required(),
+      selected: yup.boolean().strict().required(),
+    });
+
+    let questionValidation = [];
+    let answerValidation = [];
+
+    await Promise.all(
+      req.body.questions.map(async (question) => {
+        let isValid = await questionSchema.isValid(question);
+        questionValidation.push(isValid);
+
+        if (isValid) {
+          await Promise.all(
+            question.answerOptions.map(async (answer) => {
+              let isValid = await answerOptionSchema.isValid(answer);
+              answerValidation.push(isValid);
+            })
+          );
+        }
+      })
+    );
+
+    if (
+      questionValidation.findIndex((validation) => validation == false) >= 0 ||
+      answerValidation.findIndex((validation) => validation == false) >= 0
+    ) {
       return res.status(400).json({
         error: "Um ou mais campos não foram preenchidos corretamente",
       });
@@ -42,11 +67,12 @@ class HomeworkController {
         data: {
           title: req.body.title,
           public_at: req.body.publicOn,
+          deadline: req.body.deadline,
           school_class_id: req.params.schoolClassId,
         },
       })
       .then((homework) => {
-        req.body.questions.map((quest) => {
+        req.body.questions.map((quest, index) => {
           client.question
             .create({
               data: {
@@ -54,18 +80,21 @@ class HomeworkController {
                 description: quest.description,
                 type: quest.type,
                 points: quest.points,
+                position: index,
               },
             })
             .then((question) => {
-              quest.answerOptions.map((ans) =>
-                client.answerOption.create({
-                  data: {
-                    question_id: question.id,
-                    text: ans.text,
-                    selected: ans.selected,
-                  },
-                })
-              );
+              quest.answerOptions.map((ans) => {
+                client.answerOption
+                  .create({
+                    data: {
+                      question_id: question.id,
+                      text: ans.text,
+                      selected: ans.selected,
+                    },
+                  })
+                  .then(() => {}); //por algum motivo, não funciona sem isso!
+              });
             })
             .catch((err) => {
               return res.status(500).json(err);
@@ -89,10 +118,21 @@ class HomeworkController {
     });
 
     if (homework) {
+      let _homework: any = { ...homework };
+      _homework.questions = [];
+
+      homework.questions.map((question) => {
+        let _question: any = { ...question };
+        delete _question.answers;
+
+        _question.answerOptions = question.answers;
+        _homework.questions.push(_question);
+      });
+
       return res.send(
         JSON.stringify(
-          homework,
-          (key, value) => (typeof value === "bigint" ? Number(value) : value) //converte bigint em numero compativel com JS
+          _homework,
+          (key, value) => (typeof value === "bigint" ? Number(value) : value) //converte bigint em numero compatível com JS
         )
       );
     } else {
@@ -163,6 +203,145 @@ class HomeworkController {
     // };
 
     return res.json(homework);
+  }
+
+  async indexAll(req: Request, res: Response) {
+    let homeworks = await client.homework.findMany({
+      where: { school_class_id: req.params.school_class_id },
+      orderBy: [{ public_at: "asc" }],
+    });
+
+    return res.json(homeworks);
+  }
+
+  async update(req: Request, res: Response) {
+    let homework = await client.homework.findFirst({
+      where: { id: req.params.id },
+      include: {
+        questions: {
+          include: { answers: true },
+        },
+      },
+    });
+
+    if (!homework) {
+      return res.status(404).json({
+        error: "Atividade não encontrada",
+      });
+    }
+
+    const homeworkSchema = yup.object().shape({
+      id: yup.string().strict(),
+      title: yup.string().strict().required(),
+      questions: yup.array().min(1).strict().required(),
+      publicOn: yup.string().strict(),
+      deadline: yup.string().strict(),
+    });
+
+    if (!(await homeworkSchema.isValid(req.body))) {
+      return res.status(400).json({
+        error: "Um ou mais campos não foram preenchidos corretamente",
+      });
+    }
+
+    const questionSchema = yup.object().shape({
+      description: yup.string().strict().required(),
+      type: yup
+        .string()
+        .strict()
+        .matches(/single|multi/)
+        .required(),
+      answerOptions: yup.array().min(1).strict().required(),
+      points: yup.number().strict(),
+    });
+
+    const answerOptionSchema = yup.object().shape({
+      text: yup.string().strict().required(),
+      selected: yup.boolean().strict().required(),
+    });
+
+    let questionValidation = [];
+    let answerValidation = [];
+
+    await Promise.all(
+      req.body.questions.map(async (question) => {
+        let isValid = await questionSchema.isValid(question);
+        questionValidation.push(isValid);
+
+        if (isValid) {
+          await Promise.all(
+            question.answerOptions.map(async (answer) => {
+              let isValid = await answerOptionSchema.isValid(answer);
+              answerValidation.push(isValid);
+            })
+          );
+        }
+      })
+    );
+
+    if (
+      questionValidation.findIndex((validation) => validation == false) >= 0 ||
+      answerValidation.findIndex((validation) => validation == false) >= 0
+    ) {
+      return res.status(400).json({
+        error: "Um ou mais campos não foram preenchidos corretamente",
+      });
+    }
+
+    await client.homework
+      .update({
+        where: { id: req.params.id },
+        data: {
+          title: req.body.title,
+          public_at: req.body.public_at,
+          deadline: req.body.deadline,
+        },
+      })
+      .then(async () => {
+        //deleta questões antigas
+        await Promise.all(
+          homework.questions.map(async (question) => {
+            await client.answerOption.deleteMany({
+              where: { question_id: question.id },
+            });
+            await client.question.delete({ where: { id: question.id } });
+          })
+        );
+
+        //insere questões atualizadas
+        req.body.questions.map((quest, index) => {
+          client.question
+            .create({
+              data: {
+                homework_id: homework.id,
+                description: quest.description,
+                type: quest.type,
+                points: quest.points,
+                position: index,
+              },
+            })
+            .then((question) => {
+              quest.answerOptions.map((ans) => {
+                client.answerOption
+                  .create({
+                    data: {
+                      question_id: question.id,
+                      text: ans.text,
+                      selected: ans.selected,
+                    },
+                  })
+                  .then(() => {}); //por algum motivo, não funciona sem isso!
+              });
+            })
+            .catch((err) => {
+              return res.status(500).json(err);
+            });
+        });
+        return res.json(homework);
+      })
+      .catch((err) => {
+        return res.status(500).json(err);
+      });
   }
 }
 

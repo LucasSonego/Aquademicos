@@ -55,7 +55,8 @@ routes.put("/class_lessons", ClassLessonController.update);
 routes.delete("/class_lessons", ClassLessonController.delete);
 
 routes.post("/homeworks/:schoolClassId", HomeworkController.store);
+routes.get("/homeworks/list/:school_class_id", HomeworkController.indexAll);
 routes.get("/homeworks/:id", HomeworkController.index);
-// routes.get("/homeworks/:id", HomeworkController.indexAll);
+routes.put("/homeworks/:id", HomeworkController.update);
 
 export default routes;

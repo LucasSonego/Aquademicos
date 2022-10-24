@@ -119,7 +119,8 @@ const ManageQuestion: React.FC<IProps> = (props) => {
         onChange={(event) => handleDescriptionChange(event.target.value)}
       />
       <div className="answer-options">
-        {props.value.answerOptions.length > 0 &&
+        {props.value.answerOptions &&
+          props.value.answerOptions.length > 0 &&
           props.value.answerOptions.map((answerOption, index) => (
             <AnswerOption
               key={index}
